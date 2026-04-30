@@ -2,6 +2,7 @@ package io.mipangg.liveklasscreatorsettlementapi.domain.course.entity;
 
 import io.mipangg.liveklasscreatorsettlementapi.domain.common.BaseEntity;
 import io.mipangg.liveklasscreatorsettlementapi.domain.creator.entity.Creator;
+import io.mipangg.liveklasscreatorsettlementapi.global.id.IdPrefix;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,12 +14,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@IdPrefix("course")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Course extends BaseEntity {
-
-    @Column(unique = true, nullable = false)
-    private String publicId;
 
     @Column(nullable = false)
     private String title;
@@ -28,8 +27,7 @@ public class Course extends BaseEntity {
     private Creator creator;
 
     @Builder
-    public Course(String publicId, String title, Creator creator) {
-        this.publicId = publicId;
+    public Course(String title, Creator creator) {
         this.title = title;
         this.creator = creator;
     }

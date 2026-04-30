@@ -1,0 +1,14 @@
+package io.mipangg.liveklasscreatorsettlementapi.global.id;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import org.hibernate.annotations.IdGeneratorType;
+
+@IdGeneratorType(PrefixedIdGenerator.class)
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD}) // 적용 타겟: TYPE, FIELD, METHOD
+public @interface IdPrefix {
+    String value();
+}
