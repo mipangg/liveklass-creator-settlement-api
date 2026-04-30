@@ -1,12 +1,12 @@
-package io.mipangg.liveklasscreatorsettlementapi;
+package io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.global;
 
 import io.mipangg.liveklasscreatorsettlementapi.domain.course.entity.Course;
 import io.mipangg.liveklasscreatorsettlementapi.domain.creator.entity.Creator;
-import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.controller.SaleRecordController;
+import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto.SaleRecordCreateRequest;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.entity.SaleRecord;
 import io.mipangg.liveklasscreatorsettlementapi.domain.student.entity.Student;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public class TestUtil {
@@ -14,15 +14,12 @@ public class TestUtil {
     public static List<Creator> genCreators() {
         return List.of(
                 Creator.builder()
-                        .publicId("creator-1")
                         .name("김강사")
                         .build(),
                 Creator.builder()
-                        .publicId("creator-2")
                         .name("이강사")
                         .build(),
                 Creator.builder()
-                        .publicId("creator-3")
                         .name("박강사")
                         .build()
         );
@@ -58,22 +55,18 @@ public class TestUtil {
         List<Creator> creators = genCreators();
         return List.of(
                 Course.builder()
-                        .publicId("course-1")
                         .creator(creators.get(0))
                         .title("Spring Boot 입문")
                         .build(),
                 Course.builder()
-                        .publicId("course-2")
                         .creator(creators.get(0))
                         .title("JPA 실전")
                         .build(),
                 Course.builder()
-                        .publicId("course-3")
                         .creator(creators.get(1))
                         .title("Kotlin 기초")
                         .build(),
                 Course.builder()
-                        .publicId("course-4")
                         .creator(creators.get(2))
                         .title("MSA 설계")
                         .build()
@@ -85,54 +78,56 @@ public class TestUtil {
         List<Student> students = genStudents();
         return List.of(
                 SaleRecord.builder()
-                        .publicId("sale-1")
                         .course(courses.get(0))
                         .student(students.get(0))
                         .amount(BigDecimal.valueOf(5000))
-                        .paidAt(LocalDateTime.of(2025, 3, 5, 10, 0))
+                        .paidAt(OffsetDateTime.parse("2025-03-05T10:00:00+09:00"))
                         .build(),
                 SaleRecord.builder()
-                        .publicId("sale-2")
                         .course(courses.get(0))
                         .student(students.get(1))
                         .amount(BigDecimal.valueOf(50000))
-                        .paidAt(LocalDateTime.of(2025, 3, 15, 14,30))
+                        .paidAt(OffsetDateTime.parse("2025-03-15T14:30:00+09:00"))
                         .build(),
                 SaleRecord.builder()
-                        .publicId("sale-3")
                         .course(courses.get(1))
                         .student(students.get(2))
                         .amount(BigDecimal.valueOf(80000))
-                        .paidAt(LocalDateTime.of(2025, 3, 20, 9, 0))
+                        .paidAt(OffsetDateTime.parse("2025-03-20T09:00:00+09:00"))
                         .build(),
                 SaleRecord.builder()
-                        .publicId("sale-4")
                         .course(courses.get(1))
                         .student(students.get(3))
                         .amount(BigDecimal.valueOf(80000))
-                        .paidAt(LocalDateTime.of(2025, 3, 22, 11, 0))
+                        .paidAt(OffsetDateTime.parse("2025-03-22T11:00:00+09:00"))
                         .build(),
                 SaleRecord.builder()
-                        .publicId("sale-5")
                         .course(courses.get(2))
                         .student(students.get(4))
                         .amount(BigDecimal.valueOf(60000))
-                        .paidAt(LocalDateTime.of(2025, 1, 31, 23, 30))
+                        .paidAt(OffsetDateTime.parse("2025-01-31T23:30:00+09:00"))
                         .build(),
                 SaleRecord.builder()
-                        .publicId("sale-6")
                         .course(courses.get(2))
                         .student(students.get(5))
                         .amount(BigDecimal.valueOf(60000))
-                        .paidAt(LocalDateTime.of(2025, 3, 10, 16, 0))
+                        .paidAt(OffsetDateTime.parse("2025-03-10T16:00:00+09:00"))
                         .build(),
                 SaleRecord.builder()
-                        .publicId("sale-7")
                         .course(courses.get(5))
                         .student(students.get(6))
                         .amount(BigDecimal.valueOf(120000))
-                        .paidAt(LocalDateTime.of(2025, 2, 14, 10, 0))
+                        .paidAt(OffsetDateTime.parse("2025-02-14T10:00:00+09:00"))
                         .build()
+        );
+    }
+
+    public static SaleRecordCreateRequest genSaleRecordCreateRequest() {
+        return new SaleRecordCreateRequest(
+                "course-1",
+                "student-1",
+                BigDecimal.valueOf(50000),
+                OffsetDateTime.parse("2025-03-05T10:00:00+09:00")
         );
     }
 }

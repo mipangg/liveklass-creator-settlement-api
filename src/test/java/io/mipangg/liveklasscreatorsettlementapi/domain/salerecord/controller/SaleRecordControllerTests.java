@@ -1,6 +1,5 @@
 package io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -9,17 +8,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto.SaleRecordCreateRequest;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.service.SaleRecordService;
+import io.mipangg.liveklasscreatorsettlementapi.global.config.JacksonConfig;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(SaleRecordController.class)
+@Import(JacksonConfig.class)
 class SaleRecordControllerTests {
 
     @Autowired
@@ -39,7 +41,7 @@ class SaleRecordControllerTests {
                 "course-1",
                 "student-1",
                 BigDecimal.valueOf(50000),
-                LocalDateTime.of(2025, 3, 5, 10, 0)
+                OffsetDateTime.parse("2025-03-05T10:00:00+09:00")
         );
 
         mockMvc.perform(post("/sale-records")
@@ -59,7 +61,7 @@ class SaleRecordControllerTests {
                 "",
                 "student-1",
                 BigDecimal.valueOf(50000),
-                LocalDateTime.of(2025, 3, 5, 10, 0)
+                OffsetDateTime.parse("2025-03-05T10:00:00+09:00")
         );
 
         mockMvc.perform(post("/sale-records")

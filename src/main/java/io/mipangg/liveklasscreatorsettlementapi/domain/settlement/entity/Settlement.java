@@ -3,6 +3,7 @@ package io.mipangg.liveklasscreatorsettlementapi.domain.settlement.entity;
 import io.mipangg.liveklasscreatorsettlementapi.domain.commissionrate.entity.CommissionRate;
 import io.mipangg.liveklasscreatorsettlementapi.domain.common.BaseEntity;
 import io.mipangg.liveklasscreatorsettlementapi.domain.creator.entity.Creator;
+import io.mipangg.liveklasscreatorsettlementapi.global.id.IdPrefix;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,35 +14,32 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.math.BigDecimal;
-import java.time.YearMonth;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@IdPrefix("settlement")
 @Getter
 @Table(
         name = "settlement",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_settlement_creator_id_year_month", // 제약 조건 이름
-                        columnNames = {"creator_id", "year_month"} // 복합 유니크 키로 묶을 컬럼들
+                        name = "uk_settlement_creator_id_settlement_month", // 제약 조건 이름
+                        columnNames = {"creator_id", "settlement_month"} // 복합 유니크 키로 묶을 컬럼들
                 )
         }
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Settlement extends BaseEntity {
 
-    @Column(unique = true, nullable = false)
-    private String publicId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id", nullable = false)
     private Creator creator;
 
-    @Column(nullable = false)
-    private YearMonth yearMonth;
+    @Column(nullable = false, length = 7)
+    private String settlementMonth;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -75,7 +73,7 @@ public class Settlement extends BaseEntity {
     @Builder
     public Settlement(
             Creator creator,
-            YearMonth yearMonth,
+            String settlementMonth,
             BigDecimal totalSaleAmount,
             BigDecimal totalCancelAmount,
             BigDecimal netSaleAmount,
@@ -86,7 +84,7 @@ public class Settlement extends BaseEntity {
             CommissionRate commissionRate
     ) {
         this.creator = creator;
-        this.yearMonth = yearMonth;
+        this.settlementMonth = settlementMonth;
         this.status = SettlementStatus.PENDING;
         this.totalSaleAmount = totalSaleAmount;
         this.totalCancelAmount = totalCancelAmount;
