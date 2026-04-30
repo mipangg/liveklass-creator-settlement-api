@@ -27,27 +27,13 @@ public class TestUtil {
 
     public static List<Student> genStudents() {
         return List.of(
-                Student.builder()
-                        .publicId("student-1")
-                        .build(),
-                Student.builder()
-                        .publicId("student-2")
-                        .build(),
-                Student.builder()
-                        .publicId("student-3")
-                        .build(),
-                Student.builder()
-                        .publicId("student-4")
-                        .build(),
-                Student.builder()
-                        .publicId("student-5")
-                        .build(),
-                Student.builder()
-                        .publicId("student-6")
-                        .build(),
-                Student.builder()
-                        .publicId("student-7")
-                        .build()
+                new Student(),
+                new Student(),
+                new Student(),
+                new Student(),
+                new Student(),
+                new Student(),
+                new Student()
         );
     }
 
