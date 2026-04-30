@@ -10,6 +10,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.math.BigDecimal;
 import java.time.YearMonth;
 import lombok.AccessLevel;
@@ -19,6 +21,15 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Table(
+        name = "settlement",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_settlement_creator_id_year_month", // 제약 조건 이름
+                        columnNames = {"creator_id", "year_month"} // 복합 유니크 키로 묶을 컬럼들
+                )
+        }
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Settlement extends BaseEntity {
 

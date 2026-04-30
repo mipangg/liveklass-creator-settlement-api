@@ -8,6 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
@@ -17,6 +19,15 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Table(
+        name = "sale_record",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_sale_record_course_id_student_id", // 제약 조건 이름
+                        columnNames = {"course_id", "student_id"} // 복합 유니크 키로 묶을 컬럼들
+                )
+        }
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SaleRecord extends BaseEntity {
 
