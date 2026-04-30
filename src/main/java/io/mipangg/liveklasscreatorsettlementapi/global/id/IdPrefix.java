@@ -8,7 +8,7 @@ import org.hibernate.annotations.IdGeneratorType;
 
 @IdGeneratorType(PrefixedIdGenerator.class)
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD}) // 적용 타겟: TYPE, FIELD, METHOD
 public @interface IdPrefix {
     String value();
 }

@@ -29,7 +29,7 @@ public class PrefixedIdGenerator implements IdentifierGenerator {
             Object object, String prefix
     ) {
         String entityName = object.getClass().getName();
-        int substringStart = prefix.length() + 2; // "course-" 다음 숫자 시작 위치
+        int substringStart = prefix.length() + "-".length() + 1; // "course-" 다음 숫자 시작 위치
 
         return (Long) session
                 .createQuery(

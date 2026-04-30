@@ -1,7 +1,7 @@
 package io.mipangg.liveklasscreatorsettlementapi.domain.common;
 
+import io.mipangg.liveklasscreatorsettlementapi.global.id.IdPrefix;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class BaseEntity {
 
     @Id
-    @GeneratedValue(generator = "prefixed-id")
+    @IdPrefix("")
     private String id;
 
     @CreatedDate // 생성일 자동 저장

@@ -5,7 +5,6 @@ import io.mipangg.liveklasscreatorsettlementapi.global.id.IdPrefix;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import lombok.Builder;
 import lombok.Getter;
