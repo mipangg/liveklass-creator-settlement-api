@@ -44,6 +44,7 @@ public class SaleRecordService {
     }
 
     public List<SaleRecordListReadResponse> findSaleRecord(SaleRecordListReadRequest req) {
+
         return null;
     }
 }
