@@ -10,6 +10,7 @@ import io.mipangg.liveklasscreatorsettlementapi.domain.student.repository.Studen
 import io.mipangg.liveklasscreatorsettlementapi.global.exception.CustomLogicException;
 import io.mipangg.liveklasscreatorsettlementapi.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,13 +25,6 @@ public class SaleRecordService {
     @Transactional
     public void saveSaleRecord(SaleRecordCreateRequest req) {
 
-        if (saleRecordRepository.existsSaleRecordByCourseIdAndStudentId(
-                        req.courseId(),
-                        req.studentId()
-        )) {
-            throw new CustomLogicException(ErrorCode.SALE_RECORD_CONFLICT);
-        }
-
         Student student = studentRepository.findById(req.studentId())
                 .orElseThrow(() -> new CustomLogicException(ErrorCode.STUDENT_NOT_FOUND));
 
@@ -38,7 +32,11 @@ public class SaleRecordService {
                 .orElseThrow(() -> new CustomLogicException(ErrorCode.COURSE_NOT_FOUND));
 
 
-        saleRecordRepository.save(new SaleRecord(course, student, req.amount(), req.paidAt()));
+        try {
+            saleRecordRepository.save(new SaleRecord(course, student, req.amount(), req.paidAt()));
+        } catch (DataIntegrityViolationException e) { // DB 제약조건 위반
+            throw new CustomLogicException(ErrorCode.SALE_RECORD_CONFLICT);
+        }
 
     }
 }
