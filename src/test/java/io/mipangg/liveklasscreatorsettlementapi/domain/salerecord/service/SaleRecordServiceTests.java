@@ -1,8 +1,8 @@
 package io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.service;
 
-import static io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.global.TestUtil.genCourses;
-import static io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.global.TestUtil.genSaleRecordCreateRequest;
-import static io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.global.TestUtil.genStudents;
+import static io.mipangg.liveklasscreatorsettlementapi.global.TestUtil.genCourses;
+import static io.mipangg.liveklasscreatorsettlementapi.global.TestUtil.genSaleRecordCreateRequest;
+import static io.mipangg.liveklasscreatorsettlementapi.global.TestUtil.genStudents;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
