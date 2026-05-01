@@ -1,8 +1,8 @@
 package io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.service;
 
-import static io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.global.TestUtil.genCourses;
-import static io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.global.TestUtil.genSaleRecordCreateRequest;
-import static io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.global.TestUtil.genStudents;
+import static io.mipangg.liveklasscreatorsettlementapi.global.TestUtil.genCourses;
+import static io.mipangg.liveklasscreatorsettlementapi.global.TestUtil.genSaleRecordCreateRequest;
+import static io.mipangg.liveklasscreatorsettlementapi.global.TestUtil.genStudents;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -18,6 +18,7 @@ import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.repository.Sal
 import io.mipangg.liveklasscreatorsettlementapi.domain.student.entity.Student;
 import io.mipangg.liveklasscreatorsettlementapi.domain.student.repository.StudentRepository;
 import io.mipangg.liveklasscreatorsettlementapi.global.exception.CustomLogicException;
+import io.mipangg.liveklasscreatorsettlementapi.global.exception.ErrorCode;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
 @ExtendWith(MockitoExtension.class)
 class SaleRecordServiceTests {
@@ -50,15 +52,11 @@ class SaleRecordServiceTests {
         Course course = genCourses().getFirst();
         Student student = genStudents().getFirst();
 
-        when(saleRecordRepository.existsSaleRecordByCourseIdAndStudentId(anyString(), anyString()))
-                        .thenReturn(false);
         when(studentRepository.findById(anyString())).thenReturn(Optional.of(student));
         when(courseRepository.findById(anyString())).thenReturn(Optional.of(course));
 
         saleRecordService.saveSaleRecord(req);
 
-        verify(saleRecordRepository)
-                .existsSaleRecordByCourseIdAndStudentId(anyString(), anyString());
         verify(studentRepository).findById(anyString());
         verify(courseRepository).findById(anyString());
         verify(saleRecordRepository).save(any(SaleRecord.class));
@@ -71,21 +69,19 @@ class SaleRecordServiceTests {
 
         SaleRecordCreateRequest req = genSaleRecordCreateRequest();
 
-        when(saleRecordRepository.existsSaleRecordByCourseIdAndStudentId(anyString(), anyString()))
-                .thenReturn(true);
+        when(studentRepository.findById(anyString()))
+                .thenReturn(Optional.of(genStudents().getFirst()));
+        when(courseRepository.findById(anyString()))
+                .thenReturn(Optional.of(genCourses().getFirst()));
+
+        when(saleRecordRepository.save(any())).thenThrow(new DataIntegrityViolationException(""));
 
         assertThatThrownBy(
                 () -> {
                     saleRecordService.saveSaleRecord(req);
                 }
         ).isInstanceOf(CustomLogicException.class)
-                .hasMessage("이미 존재하는 판매 내역입니다.");
-
-        verify(saleRecordRepository)
-                .existsSaleRecordByCourseIdAndStudentId(anyString(), anyString());
-        verify(studentRepository, never()).findById(anyString());
-        verify(courseRepository, never()).findById(anyString());
-        verify(saleRecordRepository, never()).save(any(SaleRecord.class));
+                .hasMessage(ErrorCode.SALE_RECORD_CONFLICT.getMessage());
 
     }
 
@@ -97,8 +93,6 @@ class SaleRecordServiceTests {
 
         Student student = genStudents().getFirst();
 
-        when(saleRecordRepository.existsSaleRecordByCourseIdAndStudentId(anyString(), anyString()))
-                .thenReturn(false);
         when(studentRepository.findById(anyString())).thenReturn(Optional.of(student));
         when(courseRepository.findById(anyString())).thenReturn(Optional.empty());
 
@@ -107,10 +101,8 @@ class SaleRecordServiceTests {
                     saleRecordService.saveSaleRecord(req);
                 }
         ).isInstanceOf(CustomLogicException.class)
-                .hasMessage("강의를 찾을 수 없습니다.");
+                .hasMessage(ErrorCode.COURSE_NOT_FOUND.getMessage());
 
-        verify(saleRecordRepository)
-                .existsSaleRecordByCourseIdAndStudentId(anyString(), anyString());
         verify(studentRepository).findById(anyString());
         verify(courseRepository).findById(anyString());
         verify(saleRecordRepository, never()).save(any(SaleRecord.class));

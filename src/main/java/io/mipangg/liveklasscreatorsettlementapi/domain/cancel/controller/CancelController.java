@@ -1,7 +1,7 @@
-package io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.controller;
+package io.mipangg.liveklasscreatorsettlementapi.domain.cancel.controller;
 
-import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto.SaleRecordCreateRequest;
-import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.service.SaleRecordService;
+import io.mipangg.liveklasscreatorsettlementapi.domain.cancel.dto.CancelCreateRequest;
+import io.mipangg.liveklasscreatorsettlementapi.domain.cancel.service.CancelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,17 +12,17 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/sale-records")
+@RequestMapping("/cancels")
 @RequiredArgsConstructor
-public class SaleRecordController {
+public class CancelController {
 
-    private final SaleRecordService saleRecordService;
+    private final CancelService cancelService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createSaleRecord(@Valid @RequestBody SaleRecordCreateRequest req) {
+    public void createCancel(@Valid @RequestBody CancelCreateRequest req) {
 
-        saleRecordService.saveSaleRecord(req);
+        cancelService.saveCancel(req);
 
     }
 

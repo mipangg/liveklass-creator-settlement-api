@@ -1,5 +1,6 @@
-package io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.global;
+package io.mipangg.liveklasscreatorsettlementapi.global;
 
+import io.mipangg.liveklasscreatorsettlementapi.domain.cancel.dto.CancelCreateRequest;
 import io.mipangg.liveklasscreatorsettlementapi.domain.course.entity.Course;
 import io.mipangg.liveklasscreatorsettlementapi.domain.creator.entity.Creator;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto.SaleRecordCreateRequest;
@@ -100,7 +101,7 @@ public class TestUtil {
                         .paidAt(OffsetDateTime.parse("2025-03-10T16:00:00+09:00"))
                         .build(),
                 SaleRecord.builder()
-                        .course(courses.get(5))
+                        .course(courses.get(3))
                         .student(students.get(6))
                         .amount(BigDecimal.valueOf(120000))
                         .paidAt(OffsetDateTime.parse("2025-02-14T10:00:00+09:00"))
@@ -114,6 +115,14 @@ public class TestUtil {
                 "student-1",
                 BigDecimal.valueOf(50000),
                 OffsetDateTime.parse("2025-03-05T10:00:00+09:00")
+        );
+    }
+
+    public static CancelCreateRequest genCancelCreateRequest() {
+        return new CancelCreateRequest(
+                "sale-3",
+                BigDecimal.valueOf(80000),
+                OffsetDateTime.parse("2025-03-21T09:00:00+09:00")
         );
     }
 }
