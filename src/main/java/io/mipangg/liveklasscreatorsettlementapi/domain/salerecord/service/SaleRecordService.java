@@ -33,7 +33,7 @@ public class SaleRecordService {
 
 
         try {
-            saleRecordRepository.save(new SaleRecord(course, student, req.amount(), req.paidAt()));
+            saleRecordRepository.saveAndFlush(new SaleRecord(course, student, req.amount(), req.paidAt()));
         } catch (DataIntegrityViolationException e) { // DB 제약조건 위반
             throw new CustomLogicException(ErrorCode.SALE_RECORD_CONFLICT);
         }
