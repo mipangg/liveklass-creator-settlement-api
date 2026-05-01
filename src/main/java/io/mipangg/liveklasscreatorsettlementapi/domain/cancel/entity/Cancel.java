@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 public class Cancel extends BaseEntity {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "sale_record_id", nullable = false)
+    @JoinColumn(name = "sale_record_id", nullable = false, unique = true)
     private SaleRecord saleRecord;
 
     @Column(nullable = false)

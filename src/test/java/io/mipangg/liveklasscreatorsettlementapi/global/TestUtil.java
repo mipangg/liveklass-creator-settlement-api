@@ -101,7 +101,7 @@ public class TestUtil {
                         .paidAt(OffsetDateTime.parse("2025-03-10T16:00:00+09:00"))
                         .build(),
                 SaleRecord.builder()
-                        .course(courses.get(5))
+                        .course(courses.get(3))
                         .student(students.get(6))
                         .amount(BigDecimal.valueOf(120000))
                         .paidAt(OffsetDateTime.parse("2025-02-14T10:00:00+09:00"))
