@@ -3,12 +3,15 @@ package io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.service;
 import io.mipangg.liveklasscreatorsettlementapi.domain.course.entity.Course;
 import io.mipangg.liveklasscreatorsettlementapi.domain.course.repository.CourseRepository;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto.SaleRecordCreateRequest;
+import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto.SaleRecordListReadRequest;
+import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto.SaleRecordListReadResponse;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.entity.SaleRecord;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.repository.SaleRecordRepository;
 import io.mipangg.liveklasscreatorsettlementapi.domain.student.entity.Student;
 import io.mipangg.liveklasscreatorsettlementapi.domain.student.repository.StudentRepository;
 import io.mipangg.liveklasscreatorsettlementapi.global.exception.CustomLogicException;
 import io.mipangg.liveklasscreatorsettlementapi.global.exception.ErrorCode;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -38,5 +41,9 @@ public class SaleRecordService {
             throw new CustomLogicException(ErrorCode.SALE_RECORD_CONFLICT);
         }
 
+    }
+
+    public List<SaleRecordListReadResponse> findSaleRecord(SaleRecordListReadRequest req) {
+        return null;
     }
 }

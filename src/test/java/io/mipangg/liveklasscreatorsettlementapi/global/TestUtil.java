@@ -4,6 +4,7 @@ import io.mipangg.liveklasscreatorsettlementapi.domain.cancel.dto.CancelCreateRe
 import io.mipangg.liveklasscreatorsettlementapi.domain.course.entity.Course;
 import io.mipangg.liveklasscreatorsettlementapi.domain.creator.entity.Creator;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto.SaleRecordCreateRequest;
+import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto.SaleRecordListReadResponse;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.entity.SaleRecord;
 import io.mipangg.liveklasscreatorsettlementapi.domain.student.entity.Student;
 import java.math.BigDecimal;
@@ -67,7 +68,7 @@ public class TestUtil {
                 SaleRecord.builder()
                         .course(courses.get(0))
                         .student(students.get(0))
-                        .amount(BigDecimal.valueOf(5000))
+                        .amount(BigDecimal.valueOf(50000))
                         .paidAt(OffsetDateTime.parse("2025-03-05T10:00:00+09:00"))
                         .build(),
                 SaleRecord.builder()
@@ -123,6 +124,60 @@ public class TestUtil {
                 "sale-3",
                 BigDecimal.valueOf(80000),
                 OffsetDateTime.parse("2025-03-21T09:00:00+09:00")
+        );
+    }
+
+    public static List<SaleRecordListReadResponse> genSaleRecordListReadResponses() {
+        return List.of(
+                new SaleRecordListReadResponse(
+                        "sale-1",
+                        "course-1",
+                        "student-1",
+                        BigDecimal.valueOf(50000),
+                        OffsetDateTime.parse("2025-03-05T10:00:00+09:00")
+                ),
+                new SaleRecordListReadResponse(
+                        "sale-2",
+                        "course-1",
+                        "student-2",
+                        BigDecimal.valueOf(50000),
+                        OffsetDateTime.parse("2025-03-15T14:30:00+09:00")
+                ),
+                new SaleRecordListReadResponse(
+                        "sale-3",
+                        "course-2",
+                        "student-3",
+                        BigDecimal.valueOf(80000),
+                        OffsetDateTime.parse("2025-03-20T09:00:00+09:00")
+                ),
+                new SaleRecordListReadResponse(
+                        "sale-4",
+                        "course-2",
+                        "student-4",
+                        BigDecimal.valueOf(80000),
+                        OffsetDateTime.parse("2025-03-22T11:00:00+09:00")
+                ),
+                new SaleRecordListReadResponse(
+                        "sale-5",
+                        "course-3",
+                        "student-5",
+                        BigDecimal.valueOf(60000),
+                        OffsetDateTime.parse("2025-01-31T23:30:00+09:00")
+                ),
+                new SaleRecordListReadResponse(
+                        "sale-6",
+                        "course-3",
+                        "student-6",
+                        BigDecimal.valueOf(60000),
+                        OffsetDateTime.parse("2025-03-10T16:00:00+09:00")
+                ),
+                new SaleRecordListReadResponse(
+                        "sale-7",
+                        "course-4",
+                        "student-7",
+                        BigDecimal.valueOf(120000),
+                        OffsetDateTime.parse("2025-02-14T10:00:00+09:00")
+                )
         );
     }
 }

@@ -20,7 +20,9 @@ public class CancelController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createCancel(@Valid @RequestBody CancelCreateRequest req) {
+    public void createCancel(
+            @Valid @RequestBody CancelCreateRequest req
+    ) {
 
         cancelService.saveCancel(req);
 
