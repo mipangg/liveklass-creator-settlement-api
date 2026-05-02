@@ -10,10 +10,12 @@ import io.mipangg.liveklasscreatorsettlementapi.domain.student.entity.Student;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class TestUtil {
 
-    public static List<Creator> genCreators() {
+    public List<Creator> genCreators() {
         return List.of(
                 Creator.builder()
                         .name("김강사")
@@ -27,7 +29,7 @@ public class TestUtil {
         );
     }
 
-    public static List<Student> genStudents() {
+    public List<Student> genStudents() {
         return List.of(
                 new Student(),
                 new Student(),
@@ -39,7 +41,7 @@ public class TestUtil {
         );
     }
 
-    public static List<Course> genCourses() {
+    public List<Course> genCourses() {
         List<Creator> creators = genCreators();
         return List.of(
                 Course.builder()
@@ -61,7 +63,7 @@ public class TestUtil {
         );
     }
 
-    public static List<SaleRecord> genSaleRecords() {
+    public List<SaleRecord> genSaleRecords() {
         List<Course> courses = genCourses();
         List<Student> students = genStudents();
         return List.of(
@@ -110,7 +112,7 @@ public class TestUtil {
         );
     }
 
-    public static SaleRecordCreateRequest genSaleRecordCreateRequest() {
+    public SaleRecordCreateRequest genSaleRecordCreateRequest() {
         return new SaleRecordCreateRequest(
                 "course-1",
                 "student-1",
@@ -119,7 +121,7 @@ public class TestUtil {
         );
     }
 
-    public static CancelCreateRequest genCancelCreateRequest() {
+    public CancelCreateRequest genCancelCreateRequest() {
         return new CancelCreateRequest(
                 "sale-3",
                 BigDecimal.valueOf(80000),
@@ -127,7 +129,7 @@ public class TestUtil {
         );
     }
 
-    public static List<SaleRecordListReadResponse> genSaleRecordListReadResponses() {
+    public List<SaleRecordListReadResponse> genSaleRecordListReadResponses() {
         return List.of(
                 new SaleRecordListReadResponse(
                         "sale-1",
@@ -180,4 +182,5 @@ public class TestUtil {
                 )
         );
     }
+
 }

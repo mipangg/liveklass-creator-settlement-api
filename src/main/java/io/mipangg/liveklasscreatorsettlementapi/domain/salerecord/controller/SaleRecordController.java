@@ -37,6 +37,6 @@ public class SaleRecordController {
     public List<SaleRecordListReadResponse> readSaleRecords(
             @Valid @ModelAttribute SaleRecordListReadRequest req
     ) {
-        return saleRecordService.findSaleRecord(req);
+        return saleRecordService.findSaleRecords(req);
     }
 }

@@ -1,6 +1,5 @@
 package io.mipangg.liveklasscreatorsettlementapi.domain.cancel.controller;
 
-import static io.mipangg.liveklasscreatorsettlementapi.global.TestUtil.genCancelCreateRequest;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -9,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mipangg.liveklasscreatorsettlementapi.domain.cancel.dto.CancelCreateRequest;
 import io.mipangg.liveklasscreatorsettlementapi.domain.cancel.service.CancelService;
+import io.mipangg.liveklasscreatorsettlementapi.global.TestUtil;
 import io.mipangg.liveklasscreatorsettlementapi.global.config.JacksonConfig;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -38,7 +38,7 @@ class CancelControllerTests {
     @DisplayName("취소 등록 API를 호출 할 수 있다")
     void createCancelSuccessTest() throws Exception {
 
-        CancelCreateRequest req = genCancelCreateRequest();
+        CancelCreateRequest req = TestUtil.genCancelCreateRequest();
 
         mockMvc.perform(post("/cancels")
                 .contentType(MediaType.APPLICATION_JSON)

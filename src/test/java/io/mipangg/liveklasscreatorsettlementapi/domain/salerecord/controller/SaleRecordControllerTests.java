@@ -1,7 +1,5 @@
 package io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.controller;
 
-import static io.mipangg.liveklasscreatorsettlementapi.global.TestUtil.genSaleRecordCreateRequest;
-import static io.mipangg.liveklasscreatorsettlementapi.global.TestUtil.genSaleRecordListReadResponses;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -15,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto.SaleRecordCreateRequest;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto.SaleRecordListReadResponse;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.service.SaleRecordService;
+import io.mipangg.liveklasscreatorsettlementapi.global.TestUtil;
 import io.mipangg.liveklasscreatorsettlementapi.global.config.JacksonConfig;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -45,7 +44,7 @@ class SaleRecordControllerTests {
     @DisplayName("판매 내역 등록 api를 성공적으로 호출할 수 있다")
     void createSaleRecordSuccessTest() throws Exception {
 
-        SaleRecordCreateRequest req = genSaleRecordCreateRequest();
+        SaleRecordCreateRequest req = TestUtil.genSaleRecordCreateRequest();
 
         mockMvc.perform(post("/sale-records")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -80,9 +79,9 @@ class SaleRecordControllerTests {
     @DisplayName("판매 내역 목록 조회 api를 성공적으로 호출할 수 있다")
     void readSaleRecordsSuccessTest() throws Exception {
 
-        List<SaleRecordListReadResponse> resp = genSaleRecordListReadResponses();
+        List<SaleRecordListReadResponse> resp = TestUtil.genSaleRecordListReadResponses();
 
-        when(saleRecordService.findSaleRecord(any())).thenReturn(resp);
+        when(saleRecordService.findSaleRecords(any())).thenReturn(resp);
 
         mockMvc.perform(get("/sale-records"))
                 .andExpect(status().isOk())
