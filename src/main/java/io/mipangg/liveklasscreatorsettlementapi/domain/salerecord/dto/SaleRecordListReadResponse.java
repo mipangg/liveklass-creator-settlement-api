@@ -1,4 +1,4 @@
-package io.mipangg.liveklasscreatorsettlementapi.domain.cancel.dto;
+package io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -7,18 +7,25 @@ import jakarta.validation.constraints.PastOrPresent;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
-public record CancelCreateRequest(
+public record SaleRecordListReadResponse(
 
         @NotBlank
-        String saleId,
+        String id,
 
-        @Min(0)
+        @NotBlank
+        String courseId,
+
+        @NotBlank
+        String studentId,
+
         @NotNull
+        @Min(0)
         BigDecimal amount,
 
         @NotNull
         @PastOrPresent
-        OffsetDateTime canceledAt
+        OffsetDateTime paidAt
+
 ) {
 
 }
