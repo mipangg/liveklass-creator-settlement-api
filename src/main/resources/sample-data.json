@@ -76,5 +76,18 @@
       "amount": 120000,
       "paidAt": "2025-02-14T10:00:00+09:00"
     }
+  ],
+  "commissionRates": [
+    {
+      "id": "commission-1",
+      "rate": "15",
+      "appliedFrom": "2024-01-01T00:00:00+09:00",
+      "appliedTo": "2024-12-31T23:59:59+09:00"
+    },
+    {
+      "id": "commission-2",
+      "rate": "20",
+      "appliedFrom": "2025-01-01T00:00:00+09:00"
+    }
   ]
 }
