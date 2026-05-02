@@ -34,6 +34,7 @@ public class SaleRecordController {
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<SaleRecordListReadResponse> readSaleRecords(
             @Valid @ModelAttribute SaleRecordListReadRequest req
     ) {

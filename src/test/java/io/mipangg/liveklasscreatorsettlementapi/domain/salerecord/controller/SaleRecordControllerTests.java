@@ -83,7 +83,11 @@ class SaleRecordControllerTests {
 
         when(saleRecordService.findSaleRecords(any())).thenReturn(resp);
 
-        mockMvc.perform(get("/sale-records"))
+        mockMvc.perform(get("/sale-records")
+                        .param("creatorId", "creator-1")
+                        .param("startDate", "2025-03-01")
+                        .param("endDate", "2025-03-10")
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(7))
@@ -101,7 +105,7 @@ class SaleRecordControllerTests {
 
         mockMvc.perform(get("/sale-records")
                         .param("creatorId", "creator-1")
-                        .param("startDate", "2027-03-01")
+                        .param("startDate", "2025-03-01")
                         .param("endDate", "2027-03-10")
                 )
                 .andExpect(status().isBadRequest());

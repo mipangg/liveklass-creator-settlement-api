@@ -2,6 +2,8 @@ package io.mipangg.liveklasscreatorsettlementapi.global.init;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mipangg.liveklasscreatorsettlementapi.domain.cancel.entity.Cancel;
+import io.mipangg.liveklasscreatorsettlementapi.domain.cancel.repository.CancelRepository;
 import io.mipangg.liveklasscreatorsettlementapi.domain.commissionrate.entity.CommissionRate;
 import io.mipangg.liveklasscreatorsettlementapi.domain.commissionrate.repository.CommissionRateRepository;
 import io.mipangg.liveklasscreatorsettlementapi.domain.course.entity.Course;
@@ -34,6 +36,7 @@ public class DataInitializer implements ApplicationRunner {
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
     private final SaleRecordRepository saleRecordRepository;
+    private final CancelRepository cancelRepository;
     private final CommissionRateRepository commissionRateRepository;
     private final ObjectMapper objectMapper;
 
@@ -76,15 +79,26 @@ public class DataInitializer implements ApplicationRunner {
         }
 
         // 4. SaleRecords — _comment, json id 무시
+        Map<String, SaleRecord> saleRecordMap = new HashMap<>();
         for (JsonNode node : root.get("saleRecords")) {
+            String jsonId = node.get("id").asText();
             Course course = courseMap.get(node.get("courseId").asText());
             Student student = studentMap.get(node.get("studentId").asText());
             BigDecimal amount = BigDecimal.valueOf(node.get("amount").asInt());
             OffsetDateTime paidAt = OffsetDateTime.parse(node.get("paidAt").asText());
-            saleRecordRepository.save(new SaleRecord(course, student, amount, paidAt));
+            SaleRecord saved = saleRecordRepository.save(new SaleRecord(course, student, amount, paidAt));
+            saleRecordMap.put(jsonId, saved);
         }
 
-        // 5. CommissionRates - commission 생성 후 expireAt() 호출하여 적용 종료 기간 저장
+        // 5. Cancels — saleRecordId로 위에서 저장한 SaleRecord 참조
+        for (JsonNode node : root.get("cancels")) {
+            SaleRecord saleRecord = saleRecordMap.get(node.get("saleRecordId").asText());
+            BigDecimal amount = BigDecimal.valueOf(node.get("amount").asInt());
+            OffsetDateTime canceledAt = OffsetDateTime.parse(node.get("canceledAt").asText());
+            cancelRepository.save(new Cancel(saleRecord, amount, canceledAt));
+        }
+
+        // 6. CommissionRates - commission 생성 후 expireAt() 호출하여 적용 종료 기간 저장
         for (JsonNode node : root.get("commissionRates")) {
             BigDecimal rate = BigDecimal.valueOf(node.get("rate").asInt());
             OffsetDateTime appliedFrom = OffsetDateTime.parse(node.get("appliedFrom").asText());
