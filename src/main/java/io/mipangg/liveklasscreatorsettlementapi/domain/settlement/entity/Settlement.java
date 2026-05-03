@@ -14,6 +14,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,8 +40,8 @@ public class Settlement extends BaseEntity {
     @JoinColumn(name = "creator_id", nullable = false)
     private Creator creator;
 
-    @Column(nullable = false, length = 7)
-    private String settlementMonth;
+    @Column(nullable = false)
+    private LocalDate yearMonth;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -73,7 +75,7 @@ public class Settlement extends BaseEntity {
     @Builder
     public Settlement(
             Creator creator,
-            String settlementMonth,
+            YearMonth yearMonth,
             BigDecimal totalSaleAmount,
             BigDecimal totalCancelAmount,
             BigDecimal netSaleAmount,
@@ -84,7 +86,7 @@ public class Settlement extends BaseEntity {
             CommissionRate commissionRate
     ) {
         this.creator = creator;
-        this.settlementMonth = settlementMonth;
+        this.yearMonth = yearMonth.atDay(1); // YearMonth 입력 시 LocalDate로 저장(월 1일)
         this.status = SettlementStatus.PENDING;
         this.totalSaleAmount = totalSaleAmount;
         this.totalCancelAmount = totalCancelAmount;

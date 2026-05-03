@@ -48,7 +48,7 @@ class SettlementControllerTests {
 
         mockMvc.perform(get("/settlements/monthly")
                         .param("creatorId", "creator-1")
-                        .param("settlementMonth", "2025-03")
+                        .param("yearMonth", "2025-03")
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalSaleAmount").value(260000))
@@ -67,7 +67,7 @@ class SettlementControllerTests {
 
         mockMvc.perform(get("/settlements/monthly")
                 .param("creatorId", "creator-1")
-                .param("settlementMonth", "2025/03")
+                .param("yearMonth", "2027-03")
         ).andExpect(status().isBadRequest());
 
     }
