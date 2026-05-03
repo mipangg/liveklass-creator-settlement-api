@@ -3,6 +3,8 @@ package io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.service;
 import io.mipangg.liveklasscreatorsettlementapi.domain.common.util.DateTimeUtils;
 import io.mipangg.liveklasscreatorsettlementapi.domain.course.entity.Course;
 import io.mipangg.liveklasscreatorsettlementapi.domain.course.repository.CourseRepository;
+import io.mipangg.liveklasscreatorsettlementapi.domain.creator.entity.Creator;
+import io.mipangg.liveklasscreatorsettlementapi.domain.creator.repository.CreatorRepository;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto.SaleRecordCreateRequest;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto.SaleRecordListReadRequest;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto.SaleRecordListReadResponse;
@@ -29,6 +31,7 @@ public class SaleRecordService {
     private final StudentRepository studentRepository;
 
     private final DateTimeUtils dateTimeUtils;
+    private final CreatorRepository creatorRepository;
 
     @Transactional
     public void saveSaleRecord(SaleRecordCreateRequest req) {
@@ -38,7 +41,6 @@ public class SaleRecordService {
 
         Course course = courseRepository.findById(req.courseId())
                 .orElseThrow(() -> new CustomLogicException(ErrorCode.COURSE_NOT_FOUND));
-
 
         try {
             saleRecordRepository.saveAndFlush(
@@ -53,6 +55,13 @@ public class SaleRecordService {
     @Transactional(readOnly = true)
     public List<SaleRecordListReadResponse> findSaleRecords(SaleRecordListReadRequest req) {
 
+        Creator creator = null;
+
+        if (req.creatorId() != null) {
+            creator = creatorRepository.findById(req.creatorId())
+                    .orElseThrow(() -> new CustomLogicException(ErrorCode.CREATOR_NOT_FOUND));
+        }
+
         OffsetDateTime start = null;
         OffsetDateTime end = null;
 
@@ -61,11 +70,12 @@ public class SaleRecordService {
             end = dateTimeUtils.toEndDateTime(req.endDate());
         }
 
-        List<SaleRecord> saleRecords = saleRecordRepository.findSaleRecords(
-                req.creatorId(),
-                start,
-                end
-        );
+        List<SaleRecord> saleRecords =
+                saleRecordRepository.findSaleRecordsWithFilters(
+                        creator,
+                        start,
+                        end
+                );
 
         List<SaleRecordListReadResponse> resps = new ArrayList<>();
         for (SaleRecord saleRecord : saleRecords) {

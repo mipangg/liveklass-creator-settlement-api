@@ -2,7 +2,8 @@
   "creators": [
     { "id": "creator-1", "name": "김강사" },
     { "id": "creator-2", "name": "이강사" },
-    { "id": "creator-3", "name": "박강사" }
+    { "id": "creator-3", "name": "박강사" },
+    { "id": "creator-4", "name": "최강사" }
   ],
   "students": [
     { "id": "student-1"},
@@ -17,7 +18,8 @@
     { "id": "course-1", "creatorId": "creator-1", "title": "Spring Boot 입문" },
     { "id": "course-2", "creatorId": "creator-1", "title": "JPA 실전" },
     { "id": "course-3", "creatorId": "creator-2", "title": "Kotlin 기초" },
-    { "id": "course-4", "creatorId": "creator-3", "title": "MSA 설계" }
+    { "id": "course-4", "creatorId": "creator-3", "title": "MSA 설계" },
+    { "id": "course-5", "creatorId": "creator-4", "title": "Java 기초" }
   ],
   "saleRecords": [
     {
@@ -75,6 +77,39 @@
       "studentId": "student-7",
       "amount": 120000,
       "paidAt": "2025-02-14T10:00:00+09:00"
+    }
+  ],
+  "cancels": [
+    {
+      "id": "cancel-1",
+      "saleRecordId": "sale-3",
+      "amount": 80000,
+      "canceledAt": "2025-03-22T09:00:00+09:00"
+    },
+    {
+      "id": "cancel-2",
+      "saleRecordId": "sale-4",
+      "amount": 30000,
+      "canceledAt": "2025-03-24T11:00:00+09:00"
+    },
+    {
+      "id": "cancel-3",
+      "saleRecordId": "sale-5",
+      "amount": 60000,
+      "canceledAt": "2025-02-02T23:30:00+09:00"
+    }
+  ],
+  "commissionRates": [
+    {
+      "id": "commission-1",
+      "rate": "15",
+      "appliedFrom": "2024-01-01T00:00:00+09:00",
+      "appliedTo": "2024-12-31T23:59:59+09:00"
+    },
+    {
+      "id": "commission-2",
+      "rate": "20",
+      "appliedFrom": "2025-01-01T00:00:00+09:00"
     }
   ]
 }

@@ -9,10 +9,10 @@ public record SaleRecordListReadRequest(
 
         String creatorId,
 
-        @PastOrPresent
+        @PastOrPresent(message = "startDate는 과거 또는 현재여야 합니다.")
         LocalDate startDate,
 
-        @PastOrPresent
+        @PastOrPresent(message = "endDate는 과거 또는 현재여야 합니다.")
         LocalDate endDate
 
 ) {

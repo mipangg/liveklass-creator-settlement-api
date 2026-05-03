@@ -1,14 +1,18 @@
 package io.mipangg.liveklasscreatorsettlementapi.global;
 
 import io.mipangg.liveklasscreatorsettlementapi.domain.cancel.dto.CancelCreateRequest;
+import io.mipangg.liveklasscreatorsettlementapi.domain.cancel.entity.Cancel;
+import io.mipangg.liveklasscreatorsettlementapi.domain.commissionrate.entity.CommissionRate;
 import io.mipangg.liveklasscreatorsettlementapi.domain.course.entity.Course;
 import io.mipangg.liveklasscreatorsettlementapi.domain.creator.entity.Creator;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto.SaleRecordCreateRequest;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto.SaleRecordListReadResponse;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.entity.SaleRecord;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.entity.Settlement;
 import io.mipangg.liveklasscreatorsettlementapi.domain.student.entity.Student;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.time.YearMonth;
 import java.util.List;
 import lombok.experimental.UtilityClass;
 
@@ -25,6 +29,9 @@ public class TestUtil {
                         .build(),
                 Creator.builder()
                         .name("박강사")
+                        .build(),
+                Creator.builder()
+                        .name("최강사")
                         .build()
         );
     }
@@ -181,6 +188,48 @@ public class TestUtil {
                         OffsetDateTime.parse("2025-02-14T10:00:00+09:00")
                 )
         );
+    }
+
+    public List<Cancel> genCancels() {
+        List<SaleRecord> saleRecords = genSaleRecords();
+        return List.of(
+                Cancel.builder()
+                        .saleRecord(saleRecords.get(2))
+                        .amount(BigDecimal.valueOf(80000))
+                        .canceledAt(OffsetDateTime.parse("2025-03-22T09:00:00+09:00"))
+                        .build(),
+                Cancel.builder()
+                        .saleRecord(saleRecords.get(3))
+                        .amount(BigDecimal.valueOf(30000))
+                        .canceledAt(OffsetDateTime.parse("2025-03-24T11:00:00+09:00"))
+                        .build(),
+                Cancel.builder()
+                        .saleRecord(saleRecords.get(4))
+                        .amount(BigDecimal.valueOf(60000))
+                        .canceledAt(OffsetDateTime.parse("2025-02-02T23:30:00+09:00"))
+                        .build()
+        );
+    }
+
+    public Settlement genSettlementForCreator1() {
+        return Settlement.builder()
+                .settlementMonth(YearMonth.of(2025, 3))
+                .totalSaleAmount(BigDecimal.valueOf(260000))
+                .totalCancelAmount(BigDecimal.valueOf(110000))
+                .netSaleAmount(BigDecimal.valueOf(150000))
+                .commission(BigDecimal.valueOf(30000))
+                .totalSettlementAmount(BigDecimal.valueOf(120000))
+                .commissionRate(genCommissionRate())
+                .saleCount(4)
+                .cancelCount(2)
+                .build();
+    }
+
+    public CommissionRate genCommissionRate() {
+        return CommissionRate.builder()
+                .rate(BigDecimal.valueOf(20))
+                .appliedFrom(OffsetDateTime.parse("2025-01-01T00:00:00+09:00"))
+                .build();
     }
 
 }

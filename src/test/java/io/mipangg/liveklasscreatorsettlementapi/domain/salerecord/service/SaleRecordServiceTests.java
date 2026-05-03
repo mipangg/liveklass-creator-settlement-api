@@ -11,6 +11,8 @@ import static org.mockito.Mockito.when;
 import io.mipangg.liveklasscreatorsettlementapi.domain.common.util.DateTimeUtils;
 import io.mipangg.liveklasscreatorsettlementapi.domain.course.entity.Course;
 import io.mipangg.liveklasscreatorsettlementapi.domain.course.repository.CourseRepository;
+import io.mipangg.liveklasscreatorsettlementapi.domain.creator.entity.Creator;
+import io.mipangg.liveklasscreatorsettlementapi.domain.creator.repository.CreatorRepository;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto.SaleRecordCreateRequest;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto.SaleRecordListReadRequest;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.dto.SaleRecordListReadResponse;
@@ -48,6 +50,9 @@ class SaleRecordServiceTests {
 
     @Mock
     private StudentRepository studentRepository;
+
+    @Mock
+    private CreatorRepository creatorRepository;
 
     @Mock
     private DateTimeUtils dateTimeUtils;
@@ -127,7 +132,8 @@ class SaleRecordServiceTests {
         SaleRecordListReadRequest req = new SaleRecordListReadRequest(null, null, null);
         List<SaleRecord> saleRecords = TestUtil.genSaleRecords();
 
-        when(saleRecordRepository.findSaleRecords(any(), any(), any())).thenReturn(saleRecords);
+        when(saleRecordRepository.findSaleRecordsWithFilters(any(), any(), any()))
+                .thenReturn(saleRecords);
 
         List<SaleRecordListReadResponse> resp = saleRecordService.findSaleRecords(req);
 
@@ -176,7 +182,11 @@ class SaleRecordServiceTests {
                         .build()
         );
 
-        when(saleRecordRepository.findSaleRecords(any(), any(), any())).thenReturn(saleRecords);
+        Creator creator = TestUtil.genCreators().getFirst();
+
+        when(creatorRepository.findById(req.creatorId())).thenReturn(Optional.of(creator));
+        when(saleRecordRepository.findSaleRecordsWithFilters(any(), any(), any()))
+                .thenReturn(saleRecords);
 
         List<SaleRecordListReadResponse> resp = saleRecordService.findSaleRecords(req);
 
@@ -223,7 +233,8 @@ class SaleRecordServiceTests {
 
         when(dateTimeUtils.toStartDateTime(req.startDate())).thenReturn(start);
         when(dateTimeUtils.toEndDateTime(req.endDate())).thenReturn(end);
-        when(saleRecordRepository.findSaleRecords(req.creatorId(), start, end)).thenReturn(saleRecords);
+        when(saleRecordRepository.findSaleRecordsWithFilters(null, start, end))
+                .thenReturn(saleRecords);
 
         List<SaleRecordListReadResponse> resp = saleRecordService.findSaleRecords(req);
 
@@ -259,12 +270,15 @@ class SaleRecordServiceTests {
                         .build()
         );
 
+        Creator creator = TestUtil.genCreators().getFirst();
         OffsetDateTime start = OffsetDateTime.parse("2025-03-05T00:00:00+09:00");
         OffsetDateTime end = OffsetDateTime.parse("2025-03-10T23:59:59+09:00");
 
+        when(creatorRepository.findById(req.creatorId())).thenReturn(Optional.of(creator));
         when(dateTimeUtils.toStartDateTime(req.startDate())).thenReturn(start);
         when(dateTimeUtils.toEndDateTime(req.endDate())).thenReturn(end);
-        when(saleRecordRepository.findSaleRecords(req.creatorId(), start, end)).thenReturn(saleRecords);
+        when(saleRecordRepository.findSaleRecordsWithFilters(creator, start, end))
+                .thenReturn(saleRecords);
 
         List<SaleRecordListReadResponse> resp = saleRecordService.findSaleRecords(req);
 
@@ -290,12 +304,15 @@ class SaleRecordServiceTests {
 
         List<SaleRecord> saleRecords = List.of();
 
+        Creator creator = TestUtil.genCreators().get(3);
         OffsetDateTime start = OffsetDateTime.parse("2025-03-05T00:00:00+09:00");
         OffsetDateTime end = OffsetDateTime.parse("2025-03-10T23:59:59+09:00");
 
+        when(creatorRepository.findById(req.creatorId())).thenReturn(Optional.of(creator));
         when(dateTimeUtils.toStartDateTime(req.startDate())).thenReturn(start);
         when(dateTimeUtils.toEndDateTime(req.endDate())).thenReturn(end);
-        when(saleRecordRepository.findSaleRecords(req.creatorId(), start, end)).thenReturn(saleRecords);
+        when(saleRecordRepository.findSaleRecordsWithFilters(creator, start, end))
+                .thenReturn(saleRecords);
 
         List<SaleRecordListReadResponse> resp = saleRecordService.findSaleRecords(req);
 
