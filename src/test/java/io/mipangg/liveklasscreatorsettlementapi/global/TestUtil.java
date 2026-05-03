@@ -25,6 +25,9 @@ public class TestUtil {
                         .build(),
                 Creator.builder()
                         .name("박강사")
+                        .build(),
+                Creator.builder()
+                        .name("최강사")
                         .build()
         );
     }

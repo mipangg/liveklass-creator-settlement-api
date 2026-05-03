@@ -1,5 +1,6 @@
 package io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.repository;
 
+import io.mipangg.liveklasscreatorsettlementapi.domain.creator.entity.Creator;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.entity.SaleRecord;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -15,10 +16,10 @@ public interface SaleRecordRepository extends JpaRepository<SaleRecord, Long> {
     @Query("select s from SaleRecord s "
             + "join fetch s.course "
             + "join fetch s.student "
-            + "where (:creatorId is null or s.course.creator.id = :creatorId) "
+            + "where (:creator is null or s.course.creator = :creator) "
             + "and (:startDate is null or s.paidAt between :startDate and :endDate)")
     List<SaleRecord> findSaleRecords(
-            @Param("creatorId") String creatorId,
+            @Param("creator") Creator creator,
             @Param("startDate") OffsetDateTime startDate,
             @Param("endDate") OffsetDateTime endDate
     );
