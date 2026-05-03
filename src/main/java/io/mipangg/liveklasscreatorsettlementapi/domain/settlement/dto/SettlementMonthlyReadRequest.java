@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import java.time.YearMonth;
 
-public record SettlementReadRequest(
+public record SettlementMonthlyReadRequest(
 
         @NotBlank(message = "creatorId는 필수입니다.")
         String creatorId,

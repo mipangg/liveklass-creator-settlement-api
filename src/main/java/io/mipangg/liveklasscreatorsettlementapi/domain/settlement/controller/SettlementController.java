@@ -1,7 +1,9 @@
 package io.mipangg.liveklasscreatorsettlementapi.domain.settlement.controller;
 
-import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementReadRequest;
-import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementReadResponse;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementMonthlyReadRequest;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementMonthlyReadResponse;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementSummaryReadResponse;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementSummaryReadRequest;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.service.SettlementService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +23,18 @@ public class SettlementController {
 
     @GetMapping("/monthly")
     @ResponseStatus(HttpStatus.OK)
-    public SettlementReadResponse readSettlement(
-            @Valid @ModelAttribute SettlementReadRequest req
+    public SettlementMonthlyReadResponse readMonthlySettlement(
+            @Valid @ModelAttribute SettlementMonthlyReadRequest req
     ) {
         return settlementService.findSettlement(req);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public SettlementSummaryReadResponse readSettlementSummary(
+            @Valid @ModelAttribute SettlementSummaryReadRequest req
+    ) {
+        return settlementService.getSettlementSummary(req);
     }
 
 }

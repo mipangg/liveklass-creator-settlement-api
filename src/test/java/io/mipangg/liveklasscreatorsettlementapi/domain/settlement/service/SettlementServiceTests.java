@@ -18,9 +18,13 @@ import io.mipangg.liveklasscreatorsettlementapi.domain.creator.entity.Creator;
 import io.mipangg.liveklasscreatorsettlementapi.domain.creator.repository.CreatorRepository;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.entity.SaleRecord;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.repository.SaleRecordRepository;
-import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementReadRequest;
-import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementReadResponse;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementMonthlyReadRequest;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementMonthlyReadResponse;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementSummaryReadRequest;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementSummaryReadResponse;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementSummaryRow;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.entity.Settlement;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.entity.SettlementStatus;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.repository.SettlementRepository;
 import io.mipangg.liveklasscreatorsettlementapi.domain.student.entity.Student;
 import io.mipangg.liveklasscreatorsettlementapi.global.TestUtil;
@@ -69,7 +73,7 @@ class SettlementServiceTests {
         Creator creator = TestUtil.genCreators().getFirst();
         YearMonth yearMonth = YearMonth.of(2025, 3);
 
-        SettlementReadRequest req = new SettlementReadRequest("creator-1", yearMonth);
+        SettlementMonthlyReadRequest req = new SettlementMonthlyReadRequest("creator-1", yearMonth);
 
         OffsetDateTime startDate = OffsetDateTime.parse("2025-03-01T00:00:00+09:00");
         OffsetDateTime endDate = OffsetDateTime.parse("2025-03-31T23:59:59+09:00");
@@ -134,7 +138,7 @@ class SettlementServiceTests {
         when(settlementRepository.saveAndFlush(any()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        SettlementReadResponse result = settlementService.findSettlement(req);
+        SettlementMonthlyReadResponse result = settlementService.findSettlement(req);
 
         assertThat(result.totalSaleAmount()).isEqualByComparingTo(settlement.getTotalSaleAmount());
         assertThat(result.totalCancelAmount()).isEqualByComparingTo(settlement.getTotalCancelAmount());
@@ -154,7 +158,7 @@ class SettlementServiceTests {
         Creator creator = TestUtil.genCreators().getFirst();
         YearMonth yearMonth = YearMonth.of(2026, 5);
 
-        SettlementReadRequest req = new SettlementReadRequest("creator-1", yearMonth);
+        SettlementMonthlyReadRequest req = new SettlementMonthlyReadRequest("creator-1", yearMonth);
 
         OffsetDateTime startDate = OffsetDateTime.parse("2026-05-01T00:00:00+09:00");
 
@@ -224,7 +228,7 @@ class SettlementServiceTests {
         when(cancelRepository.findBySaleRecordInAndCanceledAtBetween(any(), any(), any()))
                 .thenReturn(cancels);
 
-        SettlementReadResponse result = settlementService.findSettlement(req);
+        SettlementMonthlyReadResponse result = settlementService.findSettlement(req);
 
         assertThat(result.totalSaleAmount()).isEqualByComparingTo(settlement.getTotalSaleAmount());
         assertThat(result.totalCancelAmount()).isEqualByComparingTo(settlement.getTotalCancelAmount());
@@ -245,7 +249,7 @@ class SettlementServiceTests {
         Creator creator = TestUtil.genCreators().getFirst();
         YearMonth yearMonth = YearMonth.of(2025, 3);
 
-        SettlementReadRequest req = new SettlementReadRequest("creator-1", yearMonth);
+        SettlementMonthlyReadRequest req = new SettlementMonthlyReadRequest("creator-1", yearMonth);
 
         OffsetDateTime startDate = OffsetDateTime.parse("2025-03-01T00:00:00+09:00");
         OffsetDateTime endDate = OffsetDateTime.parse("2025-03-31T23:59:59+09:00");
@@ -277,7 +281,7 @@ class SettlementServiceTests {
         when(settlementRepository.saveAndFlush(any()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        SettlementReadResponse result = settlementService.findSettlement(req);
+        SettlementMonthlyReadResponse result = settlementService.findSettlement(req);
 
         assertThat(result.totalSaleAmount()).isEqualByComparingTo(settlement.getTotalSaleAmount());
         assertThat(result.totalCancelAmount()).isEqualByComparingTo(settlement.getTotalCancelAmount());
@@ -298,7 +302,7 @@ class SettlementServiceTests {
         Creator creator = TestUtil.genCreators().getFirst();
         YearMonth yearMonth = YearMonth.of(2027, 3);
 
-        SettlementReadRequest req = new SettlementReadRequest("creator-1", yearMonth);
+        SettlementMonthlyReadRequest req = new SettlementMonthlyReadRequest("creator-1", yearMonth);
 
         when(creatorRepository.findById(anyString())).thenReturn(Optional.of(creator));
 
@@ -317,7 +321,7 @@ class SettlementServiceTests {
 
         YearMonth yearMonth = YearMonth.of(2027, 3);
 
-        SettlementReadRequest req = new SettlementReadRequest("creator-1", yearMonth);
+        SettlementMonthlyReadRequest req = new SettlementMonthlyReadRequest("creator-1", yearMonth);
 
         when(creatorRepository.findById(anyString())).thenReturn(Optional.empty());
 
@@ -328,6 +332,80 @@ class SettlementServiceTests {
         ).isInstanceOf(CustomLogicException.class)
                 .hasMessage(ErrorCode.CREATOR_NOT_FOUND.getMessage());
 
+    }
+    
+    @Test
+    @DisplayName("기간 내 전체 크리에이터 정산 현황 목록을 조회할 수 있다")
+    void getSettlementSummarySuccessTest() {
+
+        SettlementSummaryReadRequest req =
+                new SettlementSummaryReadRequest(
+                        YearMonth.of(2025, 1),
+                        YearMonth.of(2025, 3)
+                );
+
+        List<SettlementSummaryRow> settlementSummaryRows = List.of(
+                new SettlementSummaryRow(
+                        "creator-1",
+                        SettlementStatus.PENDING,
+                        BigDecimal.valueOf(10000)
+                ),
+                new SettlementSummaryRow(
+                        "creator-1",
+                        SettlementStatus.CONFIRMED,
+                        BigDecimal.valueOf(20000)
+                ),
+                new SettlementSummaryRow(
+                        "creator-1",
+                        SettlementStatus.PAID,
+                        BigDecimal.valueOf(30000)
+                ),
+                new SettlementSummaryRow(
+                        "creator-2",
+                        SettlementStatus.PENDING,
+                        BigDecimal.valueOf(5000)
+                ),
+                new SettlementSummaryRow(
+                        "creator-2",
+                        SettlementStatus.PAID,
+                        BigDecimal.valueOf(70000)
+                )
+        );
+
+        when(settlementRepository.findBySettlementMonthBetween(any(), any()))
+                .thenReturn(settlementSummaryRows);
+
+        SettlementSummaryReadResponse resp = settlementService.getSettlementSummary(req);
+
+        assertThat(resp.creators()).hasSize(2);
+        assertThat(resp.total().pendingAmount()).isEqualTo(BigDecimal.valueOf(15000));
+        assertThat(resp.total().confirmedAmount()).isEqualTo(BigDecimal.valueOf(20000));
+        assertThat(resp.total().paidAmount()).isEqualTo(BigDecimal.valueOf(100000));
+
+    }
+    
+    @Test
+    @DisplayName("기간 내 정산 내역이 없으면 모두 0원을 반환한다")
+    void getSettlementZeroAmountSuccessTest() {
+
+        SettlementSummaryReadRequest req =
+                new SettlementSummaryReadRequest(
+                        YearMonth.of(2025, 1),
+                        YearMonth.of(2025, 3)
+                );
+
+        List<SettlementSummaryRow> settlementSummaryRows = List.of();
+
+        when(settlementRepository.findBySettlementMonthBetween(any(), any()))
+                .thenReturn(settlementSummaryRows);
+
+        SettlementSummaryReadResponse resp = settlementService.getSettlementSummary(req);
+
+        assertThat(resp.creators()).isEmpty();
+        assertThat(resp.total().pendingAmount()).isEqualTo(BigDecimal.ZERO);
+        assertThat(resp.total().confirmedAmount()).isEqualTo(BigDecimal.ZERO);
+        assertThat(resp.total().paidAmount()).isEqualTo(BigDecimal.ZERO);
+    
     }
 
 }

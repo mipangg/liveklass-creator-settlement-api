@@ -9,19 +9,28 @@ import io.mipangg.liveklasscreatorsettlementapi.domain.creator.entity.Creator;
 import io.mipangg.liveklasscreatorsettlementapi.domain.creator.repository.CreatorRepository;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.entity.SaleRecord;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.repository.SaleRecordRepository;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.CreatorSettlementSummary;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SalesAndCancelsSummaryDto;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementAmountsDto;
-import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementReadRequest;
-import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementReadResponse;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementMonthlyReadRequest;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementMonthlyReadResponse;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementSummaryReadRequest;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementSummaryReadResponse;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementSummaryRow;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementTotalSummary;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.entity.Settlement;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.entity.SettlementStatus;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.repository.SettlementRepository;
 import io.mipangg.liveklasscreatorsettlementapi.global.exception.CustomLogicException;
 import io.mipangg.liveklasscreatorsettlementapi.global.exception.ErrorCode;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.YearMonth;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -42,7 +51,7 @@ public class SettlementService {
     private final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 
     @Transactional
-    public SettlementReadResponse findSettlement(SettlementReadRequest req) {
+    public SettlementMonthlyReadResponse findSettlement(SettlementMonthlyReadRequest req) {
 
         // req.creator 존재하는지 확인 -> 없으면 Error
         Creator creator = creatorRepository.findById(req.creatorId())
@@ -76,7 +85,7 @@ public class SettlementService {
                                 }
                             });
 
-            return toSettlementReadResponse(settlement);
+            return toSettlementMonthlyReadResponse(settlement);
         } else if (settlementMonth.equals(now)) { // 현재: List<Sale>, List<Cancel> 조회 후 계산 + 반환
             OffsetDateTime startDate = dateTimeUtils.toStartDateTime(req.settlementMonth());
             OffsetDateTime endDate = OffsetDateTime.now(); // 월 1일부터 현재 날짜까지 데이터 조회
@@ -87,10 +96,66 @@ public class SettlementService {
                     startDate,
                     endDate
             );
-            return toSettlementReadResponse(settlement);
+            return toSettlementMonthlyReadResponse(settlement);
         } else { // 미래: 예외 처리
             throw new CustomLogicException(ErrorCode.INVALID_DATE);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public SettlementSummaryReadResponse getSettlementSummary(
+            SettlementSummaryReadRequest req
+    ) {
+
+        LocalDate startDate = req.startMonth().atDay(1);
+        LocalDate endDate = req.endMonth().atEndOfMonth();
+        
+        BigDecimal totalPendingAmount = BigDecimal.ZERO;
+        BigDecimal totalConfirmedAmount = BigDecimal.ZERO;
+        BigDecimal totalPaidAmount = BigDecimal.ZERO;
+
+        // 크리에이터별 정산 합산
+        List<SettlementSummaryRow> settlementSummaryRows =
+                settlementRepository.findBySettlementMonthBetween(
+                        startDate, endDate
+                );
+        
+        Map<String, CreatorSettlementSummary> creatorSettlementSummaryMap = new HashMap<>();
+        for (SettlementSummaryRow row : settlementSummaryRows) {
+            creatorSettlementSummaryMap.computeIfAbsent(row.creatorId(), creatorId ->
+                    new CreatorSettlementSummary(creatorId)
+            );
+
+            BigDecimal amount = row.amount();
+            CreatorSettlementSummary summary = creatorSettlementSummaryMap.get(row.creatorId());
+            switch(row.status()) {
+                case SettlementStatus.PENDING -> {
+                    summary.addPendingAmount(amount);
+                    totalPendingAmount = totalPendingAmount.add(amount);
+                }
+                case SettlementStatus.CONFIRMED -> {
+                    summary.addConfirmedAmount(amount);
+                    totalConfirmedAmount = totalConfirmedAmount.add(amount);
+                }
+                case SettlementStatus.PAID -> {
+                    summary.addPaidAmount(amount);
+                    totalPaidAmount = totalPaidAmount.add(amount);
+                }
+            }
+
+        }
+
+        SettlementTotalSummary total = 
+                new SettlementTotalSummary(
+                        totalPendingAmount, 
+                        totalConfirmedAmount, 
+                        totalPaidAmount
+                );
+
+        return new SettlementSummaryReadResponse(
+                creatorSettlementSummaryMap.values().stream().toList(),
+                total
+        );
     }
 
     private Settlement createSettlement(
@@ -207,8 +272,8 @@ public class SettlementService {
         );
     }
 
-    private SettlementReadResponse toSettlementReadResponse(Settlement settlement) {
-        return new SettlementReadResponse(
+    private SettlementMonthlyReadResponse toSettlementMonthlyReadResponse(Settlement settlement) {
+        return new SettlementMonthlyReadResponse(
                 settlement.getTotalSaleAmount(),
                 settlement.getTotalCancelAmount(),
                 settlement.getNetSaleAmount(),

@@ -1,7 +1,6 @@
 package io.mipangg.liveklasscreatorsettlementapi.global;
 
 import io.mipangg.liveklasscreatorsettlementapi.domain.cancel.dto.CancelCreateRequest;
-import io.mipangg.liveklasscreatorsettlementapi.domain.cancel.entity.Cancel;
 import io.mipangg.liveklasscreatorsettlementapi.domain.commissionrate.entity.CommissionRate;
 import io.mipangg.liveklasscreatorsettlementapi.domain.course.entity.Course;
 import io.mipangg.liveklasscreatorsettlementapi.domain.creator.entity.Creator;
@@ -187,27 +186,6 @@ public class TestUtil {
                         BigDecimal.valueOf(120000),
                         OffsetDateTime.parse("2025-02-14T10:00:00+09:00")
                 )
-        );
-    }
-
-    public List<Cancel> genCancels() {
-        List<SaleRecord> saleRecords = genSaleRecords();
-        return List.of(
-                Cancel.builder()
-                        .saleRecord(saleRecords.get(2))
-                        .amount(BigDecimal.valueOf(80000))
-                        .canceledAt(OffsetDateTime.parse("2025-03-22T09:00:00+09:00"))
-                        .build(),
-                Cancel.builder()
-                        .saleRecord(saleRecords.get(3))
-                        .amount(BigDecimal.valueOf(30000))
-                        .canceledAt(OffsetDateTime.parse("2025-03-24T11:00:00+09:00"))
-                        .build(),
-                Cancel.builder()
-                        .saleRecord(saleRecords.get(4))
-                        .amount(BigDecimal.valueOf(60000))
-                        .canceledAt(OffsetDateTime.parse("2025-02-02T23:30:00+09:00"))
-                        .build()
         );
     }
 
