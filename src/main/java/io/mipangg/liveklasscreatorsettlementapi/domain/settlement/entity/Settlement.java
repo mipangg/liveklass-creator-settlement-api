@@ -41,7 +41,7 @@ public class Settlement extends BaseEntity {
     private Creator creator;
 
     @Column(nullable = false)
-    private LocalDate yearMonth;
+    private LocalDate settlementMonth;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -75,7 +75,7 @@ public class Settlement extends BaseEntity {
     @Builder
     public Settlement(
             Creator creator,
-            YearMonth yearMonth,
+            YearMonth settlementMonth,
             BigDecimal totalSaleAmount,
             BigDecimal totalCancelAmount,
             BigDecimal netSaleAmount,
@@ -86,7 +86,7 @@ public class Settlement extends BaseEntity {
             CommissionRate commissionRate
     ) {
         this.creator = creator;
-        this.yearMonth = yearMonth.atDay(1); // YearMonth 입력 시 LocalDate로 저장(월 1일)
+        this.settlementMonth = settlementMonth.atDay(1); // YearMonth 입력 시 LocalDate로 저장(월 1일)
         this.status = SettlementStatus.PENDING;
         this.totalSaleAmount = totalSaleAmount;
         this.totalCancelAmount = totalCancelAmount;

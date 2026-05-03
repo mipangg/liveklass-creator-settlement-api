@@ -42,7 +42,6 @@ public class SaleRecordService {
         Course course = courseRepository.findById(req.courseId())
                 .orElseThrow(() -> new CustomLogicException(ErrorCode.COURSE_NOT_FOUND));
 
-
         try {
             saleRecordRepository.saveAndFlush(
                     new SaleRecord(course, student, req.amount(), req.paidAt())
@@ -71,11 +70,12 @@ public class SaleRecordService {
             end = dateTimeUtils.toEndDateTime(req.endDate());
         }
 
-        List<SaleRecord> saleRecords = saleRecordRepository.findSaleRecords(
-                creator,
-                start,
-                end
-        );
+        List<SaleRecord> saleRecords =
+                saleRecordRepository.findSaleRecordsWithFilters(
+                        creator,
+                        start,
+                        end
+                );
 
         List<SaleRecordListReadResponse> resps = new ArrayList<>();
         for (SaleRecord saleRecord : saleRecords) {

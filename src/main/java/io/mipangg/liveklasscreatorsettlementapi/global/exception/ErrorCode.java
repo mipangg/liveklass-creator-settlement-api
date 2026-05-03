@@ -22,6 +22,7 @@ public enum ErrorCode {
     SALE_RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "판매 내역을 찾을 수 없습니다."),
     CANCEL_NOT_FOUND(HttpStatus.NOT_FOUND, "취소 내역을 찾을 수 없습니다."),
     SETTLEMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "정산을 찾을 수 없습니다."),
+    COMMISSION_NOT_FOUND(HttpStatus.NOT_FOUND, "수수료율을 찾을 수 없습니다."),
 
     /*
      * 409 CONFLICT
@@ -29,6 +30,7 @@ public enum ErrorCode {
     CONFLICT(HttpStatus.CONFLICT, "이미 존재하는 데이터입니다."),
     SALE_RECORD_CONFLICT(HttpStatus.CONFLICT, "이미 존재하는 판매 내역입니다."),
     CANCEL_CONFLICT(HttpStatus.CONFLICT, "이미 존재하는 취소 내역입니다."),
+    SETTLEMENT_CONFLICT(HttpStatus.CONFLICT, "이미 존재하는 정산입니다."),
     /*
      * 500 INTERNAL_SERVER_ERROR: 내부 서버 오류
      */

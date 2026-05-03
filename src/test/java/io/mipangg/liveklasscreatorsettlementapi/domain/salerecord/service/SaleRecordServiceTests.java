@@ -132,7 +132,8 @@ class SaleRecordServiceTests {
         SaleRecordListReadRequest req = new SaleRecordListReadRequest(null, null, null);
         List<SaleRecord> saleRecords = TestUtil.genSaleRecords();
 
-        when(saleRecordRepository.findSaleRecords(any(), any(), any())).thenReturn(saleRecords);
+        when(saleRecordRepository.findSaleRecordsWithFilters(any(), any(), any()))
+                .thenReturn(saleRecords);
 
         List<SaleRecordListReadResponse> resp = saleRecordService.findSaleRecords(req);
 
@@ -184,7 +185,8 @@ class SaleRecordServiceTests {
         Creator creator = TestUtil.genCreators().getFirst();
 
         when(creatorRepository.findById(req.creatorId())).thenReturn(Optional.of(creator));
-        when(saleRecordRepository.findSaleRecords(any(), any(), any())).thenReturn(saleRecords);
+        when(saleRecordRepository.findSaleRecordsWithFilters(any(), any(), any()))
+                .thenReturn(saleRecords);
 
         List<SaleRecordListReadResponse> resp = saleRecordService.findSaleRecords(req);
 
@@ -231,7 +233,8 @@ class SaleRecordServiceTests {
 
         when(dateTimeUtils.toStartDateTime(req.startDate())).thenReturn(start);
         when(dateTimeUtils.toEndDateTime(req.endDate())).thenReturn(end);
-        when(saleRecordRepository.findSaleRecords(null, start, end)).thenReturn(saleRecords);
+        when(saleRecordRepository.findSaleRecordsWithFilters(null, start, end))
+                .thenReturn(saleRecords);
 
         List<SaleRecordListReadResponse> resp = saleRecordService.findSaleRecords(req);
 
@@ -274,7 +277,8 @@ class SaleRecordServiceTests {
         when(creatorRepository.findById(req.creatorId())).thenReturn(Optional.of(creator));
         when(dateTimeUtils.toStartDateTime(req.startDate())).thenReturn(start);
         when(dateTimeUtils.toEndDateTime(req.endDate())).thenReturn(end);
-        when(saleRecordRepository.findSaleRecords(creator, start, end)).thenReturn(saleRecords);
+        when(saleRecordRepository.findSaleRecordsWithFilters(creator, start, end))
+                .thenReturn(saleRecords);
 
         List<SaleRecordListReadResponse> resp = saleRecordService.findSaleRecords(req);
 
@@ -307,7 +311,8 @@ class SaleRecordServiceTests {
         when(creatorRepository.findById(req.creatorId())).thenReturn(Optional.of(creator));
         when(dateTimeUtils.toStartDateTime(req.startDate())).thenReturn(start);
         when(dateTimeUtils.toEndDateTime(req.endDate())).thenReturn(end);
-        when(saleRecordRepository.findSaleRecords(creator, start, end)).thenReturn(saleRecords);
+        when(saleRecordRepository.findSaleRecordsWithFilters(creator, start, end))
+                .thenReturn(saleRecords);
 
         List<SaleRecordListReadResponse> resp = saleRecordService.findSaleRecords(req);
 

@@ -12,9 +12,9 @@ public record SettlementReadRequest(
         String creatorId,
 
         @JsonFormat(pattern = "yyyy-MM")
-        @NotNull(message = "yearMonth는 필수입니다.")
-        @PastOrPresent(message = "yearMonth는 과거 혹은 현재여야 합니다.")
-        YearMonth yearMonth
+        @NotNull(message = "settlementMonth는 필수입니다.")
+        @PastOrPresent(message = "settlementMonth는 과거 혹은 현재여야 합니다.")
+        YearMonth settlementMonth
 
 ) {
 

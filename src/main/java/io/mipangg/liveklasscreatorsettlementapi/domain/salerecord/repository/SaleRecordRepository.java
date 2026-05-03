@@ -18,7 +18,18 @@ public interface SaleRecordRepository extends JpaRepository<SaleRecord, Long> {
             + "join fetch s.student "
             + "where (:creator is null or s.course.creator = :creator) "
             + "and (:startDate is null or s.paidAt between :startDate and :endDate)")
-    List<SaleRecord> findSaleRecords(
+    List<SaleRecord> findSaleRecordsWithFilters(
+            @Param("creator") Creator creator,
+            @Param("startDate") OffsetDateTime startDate,
+            @Param("endDate") OffsetDateTime endDate
+    );
+
+    @Query("select s from SaleRecord s "
+            + "join fetch s.course "
+            + "join fetch s.student "
+            + "where s.course.creator = :creator "
+            + "and s.paidAt between :startDate and :endDate")
+    List<SaleRecord> findByCreatorAndPaidAtBetween(
             @Param("creator") Creator creator,
             @Param("startDate") OffsetDateTime startDate,
             @Param("endDate") OffsetDateTime endDate
