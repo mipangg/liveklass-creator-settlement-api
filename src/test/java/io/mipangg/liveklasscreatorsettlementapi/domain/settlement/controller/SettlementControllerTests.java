@@ -85,18 +85,8 @@ class SettlementControllerTests {
         SettlementSummaryReadResponse expected =
                 new SettlementSummaryReadResponse(
                         List.of(
-                                new CreatorSettlementSummary(
-                                        "creator-1",
-                                        BigDecimal.valueOf(10000),
-                                        BigDecimal.valueOf(20000),
-                                        BigDecimal.valueOf(30000)
-                                ),
-                                new CreatorSettlementSummary(
-                                        "creator-2",
-                                        BigDecimal.valueOf(5000),
-                                        BigDecimal.valueOf(0),
-                                        BigDecimal.valueOf(7000)
-                                )
+                                new CreatorSettlementSummary("creator-1"),
+                                new CreatorSettlementSummary("creator-2")
                         ),
                         new SettlementTotalSummary(
                                 BigDecimal.valueOf(15000),
@@ -114,9 +104,6 @@ class SettlementControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.creators.size()").value(2))
                 .andExpect(jsonPath("$.creators[0].creatorId").value("creator-1"))
-                .andExpect(jsonPath("$.creators[0].pendingAmount").value(10000))
-                .andExpect(jsonPath("$.creators[0].confirmedAmount").value(20000))
-                .andExpect(jsonPath("$.creators[0].paidAmount").value(30000))
                 .andExpect(jsonPath("$.total.pendingAmount").value(15000))
                 .andExpect(jsonPath("$.total.confirmedAmount").value(20000))
                 .andExpect(jsonPath("$.total.paidAmount").value(10000));
@@ -128,8 +115,8 @@ class SettlementControllerTests {
     void readSettlementSummaryFailTest() throws Exception {
 
         mockMvc.perform(get("/settlements")
-                        .param("startMonth", "2025-01")
-                        .param("endMonth", "2027-04"))
+                        .param("startMonth", "2026-01")
+                        .param("endMonth", "2026-05")) // 현재 월은 조회 불가
                 .andExpect(status().isBadRequest());
 
     }

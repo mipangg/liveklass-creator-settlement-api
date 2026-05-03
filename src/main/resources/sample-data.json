@@ -77,6 +77,22 @@
       "studentId": "student-7",
       "amount": 120000,
       "paidAt": "2025-02-14T10:00:00+09:00"
+    },
+    {
+      "_comment": "케이스 8 — 이번 달 판매 내역 조회 정산 확인용 1",
+      "id": "sale-8",
+      "courseId": "course-5",
+      "studentId": "student-1",
+      "amount": 50000,
+      "paidAt": "2026-05-01T10:00:00+09:00"
+    },
+    {
+      "_comment": "케이스 8 — 이번 달 판매 내역 조회 정산 확인용 2",
+      "id": "sale-9",
+      "courseId": "course-5",
+      "studentId": "student-2",
+      "amount": 50000,
+      "paidAt": "2026-05-03T10:00:00+09:00"
     }
   ],
   "cancels": [

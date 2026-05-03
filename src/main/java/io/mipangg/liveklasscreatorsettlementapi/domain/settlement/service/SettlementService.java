@@ -9,21 +9,28 @@ import io.mipangg.liveklasscreatorsettlementapi.domain.creator.entity.Creator;
 import io.mipangg.liveklasscreatorsettlementapi.domain.creator.repository.CreatorRepository;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.entity.SaleRecord;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.repository.SaleRecordRepository;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.CreatorSettlementSummary;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SalesAndCancelsSummaryDto;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementAmountsDto;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementMonthlyReadRequest;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementMonthlyReadResponse;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementSummaryReadRequest;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementSummaryReadResponse;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementSummaryRow;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementTotalSummary;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.entity.Settlement;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.entity.SettlementStatus;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.repository.SettlementRepository;
 import io.mipangg.liveklasscreatorsettlementapi.global.exception.CustomLogicException;
 import io.mipangg.liveklasscreatorsettlementapi.global.exception.ErrorCode;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.YearMonth;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -99,7 +106,56 @@ public class SettlementService {
     public SettlementSummaryReadResponse getSettlementSummary(
             SettlementSummaryReadRequest req
     ) {
-        return null;
+
+        LocalDate startDate = req.startMonth().atDay(1);
+        LocalDate endDate = req.endMonth().atEndOfMonth();
+        
+        BigDecimal totalPendingAmount = BigDecimal.ZERO;
+        BigDecimal totalConfirmedAmount = BigDecimal.ZERO;
+        BigDecimal totalPaidAmount = BigDecimal.ZERO;
+
+        // 크리에이터별 정산 합산
+        List<SettlementSummaryRow> settlementSummaryRows =
+                settlementRepository.findBySettlementMonthBetween(
+                        startDate, endDate
+                );
+        
+        Map<String, CreatorSettlementSummary> creatorSettlementSummaryMap = new HashMap<>();
+        for (SettlementSummaryRow row : settlementSummaryRows) {
+            creatorSettlementSummaryMap.computeIfAbsent(row.creatorId(), creatorId ->
+                    new CreatorSettlementSummary(creatorId)
+            );
+
+            BigDecimal amount = row.amount();
+            CreatorSettlementSummary summary = creatorSettlementSummaryMap.get(row.creatorId());
+            switch(row.status()) {
+                case SettlementStatus.PENDING -> {
+                    summary.addPendingAmount(amount);
+                    totalPendingAmount = totalPendingAmount.add(amount);
+                }
+                case SettlementStatus.CONFIRMED -> {
+                    summary.addConfirmedAmount(amount);
+                    totalConfirmedAmount = totalConfirmedAmount.add(amount);
+                }
+                case SettlementStatus.PAID -> {
+                    summary.addPaidAmount(amount);
+                    totalPaidAmount = totalPaidAmount.add(amount);
+                }
+            }
+
+        }
+
+        SettlementTotalSummary total = 
+                new SettlementTotalSummary(
+                        totalPendingAmount, 
+                        totalConfirmedAmount, 
+                        totalPaidAmount
+                );
+
+        return new SettlementSummaryReadResponse(
+                creatorSettlementSummaryMap.values().stream().toList(),
+                total
+        );
     }
 
     private Settlement createSettlement(

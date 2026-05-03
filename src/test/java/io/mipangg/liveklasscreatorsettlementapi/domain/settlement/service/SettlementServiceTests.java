@@ -20,7 +20,11 @@ import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.entity.SaleRec
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.repository.SaleRecordRepository;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementMonthlyReadRequest;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementMonthlyReadResponse;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementSummaryReadRequest;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementSummaryReadResponse;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementSummaryRow;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.entity.Settlement;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.entity.SettlementStatus;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.repository.SettlementRepository;
 import io.mipangg.liveklasscreatorsettlementapi.domain.student.entity.Student;
 import io.mipangg.liveklasscreatorsettlementapi.global.TestUtil;
@@ -328,6 +332,80 @@ class SettlementServiceTests {
         ).isInstanceOf(CustomLogicException.class)
                 .hasMessage(ErrorCode.CREATOR_NOT_FOUND.getMessage());
 
+    }
+    
+    @Test
+    @DisplayName("기간 내 전체 크리에이터 정산 현황 목록을 조회할 수 있다")
+    void getSettlementSummarySuccessTest() {
+
+        SettlementSummaryReadRequest req =
+                new SettlementSummaryReadRequest(
+                        YearMonth.of(2025, 1),
+                        YearMonth.of(2025, 3)
+                );
+
+        List<SettlementSummaryRow> settlementSummaryRows = List.of(
+                new SettlementSummaryRow(
+                        "creator-1",
+                        SettlementStatus.PENDING,
+                        BigDecimal.valueOf(10000)
+                ),
+                new SettlementSummaryRow(
+                        "creator-1",
+                        SettlementStatus.CONFIRMED,
+                        BigDecimal.valueOf(20000)
+                ),
+                new SettlementSummaryRow(
+                        "creator-1",
+                        SettlementStatus.PAID,
+                        BigDecimal.valueOf(30000)
+                ),
+                new SettlementSummaryRow(
+                        "creator-2",
+                        SettlementStatus.PENDING,
+                        BigDecimal.valueOf(5000)
+                ),
+                new SettlementSummaryRow(
+                        "creator-2",
+                        SettlementStatus.PAID,
+                        BigDecimal.valueOf(70000)
+                )
+        );
+
+        when(settlementRepository.findBySettlementMonthBetween(any(), any()))
+                .thenReturn(settlementSummaryRows);
+
+        SettlementSummaryReadResponse resp = settlementService.getSettlementSummary(req);
+
+        assertThat(resp.creators()).hasSize(2);
+        assertThat(resp.total().pendingAmount()).isEqualTo(BigDecimal.valueOf(15000));
+        assertThat(resp.total().confirmedAmount()).isEqualTo(BigDecimal.valueOf(20000));
+        assertThat(resp.total().paidAmount()).isEqualTo(BigDecimal.valueOf(100000));
+
+    }
+    
+    @Test
+    @DisplayName("기간 내 정산 내역이 없으면 모두 0원을 반환한다")
+    void getSettlementZeroAmountSuccessTest() {
+
+        SettlementSummaryReadRequest req =
+                new SettlementSummaryReadRequest(
+                        YearMonth.of(2025, 1),
+                        YearMonth.of(2025, 3)
+                );
+
+        List<SettlementSummaryRow> settlementSummaryRows = List.of();
+
+        when(settlementRepository.findBySettlementMonthBetween(any(), any()))
+                .thenReturn(settlementSummaryRows);
+
+        SettlementSummaryReadResponse resp = settlementService.getSettlementSummary(req);
+
+        assertThat(resp.creators()).isEmpty();
+        assertThat(resp.total().pendingAmount()).isEqualTo(BigDecimal.ZERO);
+        assertThat(resp.total().confirmedAmount()).isEqualTo(BigDecimal.ZERO);
+        assertThat(resp.total().paidAmount()).isEqualTo(BigDecimal.ZERO);
+    
     }
 
 }
