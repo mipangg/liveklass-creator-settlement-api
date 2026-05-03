@@ -2,7 +2,7 @@ package io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto;
 
 import java.math.BigDecimal;
 
-public record SettlementReadResponse(
+public record SettlementMonthlyReadResponse(
 
         BigDecimal totalSaleAmount,
         BigDecimal totalCancelAmount,

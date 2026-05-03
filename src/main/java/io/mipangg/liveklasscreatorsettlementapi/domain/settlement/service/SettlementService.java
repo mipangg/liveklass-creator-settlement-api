@@ -11,8 +11,10 @@ import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.entity.SaleRec
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.repository.SaleRecordRepository;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SalesAndCancelsSummaryDto;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementAmountsDto;
-import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementReadRequest;
-import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementReadResponse;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementMonthlyReadRequest;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementMonthlyReadResponse;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementSummaryReadRequest;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementSummaryReadResponse;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.entity.Settlement;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.repository.SettlementRepository;
 import io.mipangg.liveklasscreatorsettlementapi.global.exception.CustomLogicException;
@@ -42,7 +44,7 @@ public class SettlementService {
     private final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 
     @Transactional
-    public SettlementReadResponse findSettlement(SettlementReadRequest req) {
+    public SettlementMonthlyReadResponse findSettlement(SettlementMonthlyReadRequest req) {
 
         // req.creator 존재하는지 확인 -> 없으면 Error
         Creator creator = creatorRepository.findById(req.creatorId())
@@ -76,7 +78,7 @@ public class SettlementService {
                                 }
                             });
 
-            return toSettlementReadResponse(settlement);
+            return toSettlementMonthlyReadResponse(settlement);
         } else if (settlementMonth.equals(now)) { // 현재: List<Sale>, List<Cancel> 조회 후 계산 + 반환
             OffsetDateTime startDate = dateTimeUtils.toStartDateTime(req.settlementMonth());
             OffsetDateTime endDate = OffsetDateTime.now(); // 월 1일부터 현재 날짜까지 데이터 조회
@@ -87,10 +89,17 @@ public class SettlementService {
                     startDate,
                     endDate
             );
-            return toSettlementReadResponse(settlement);
+            return toSettlementMonthlyReadResponse(settlement);
         } else { // 미래: 예외 처리
             throw new CustomLogicException(ErrorCode.INVALID_DATE);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public SettlementSummaryReadResponse getSettlementSummary(
+            SettlementSummaryReadRequest req
+    ) {
+        return null;
     }
 
     private Settlement createSettlement(
@@ -207,8 +216,8 @@ public class SettlementService {
         );
     }
 
-    private SettlementReadResponse toSettlementReadResponse(Settlement settlement) {
-        return new SettlementReadResponse(
+    private SettlementMonthlyReadResponse toSettlementMonthlyReadResponse(Settlement settlement) {
+        return new SettlementMonthlyReadResponse(
                 settlement.getTotalSaleAmount(),
                 settlement.getTotalCancelAmount(),
                 settlement.getNetSaleAmount(),

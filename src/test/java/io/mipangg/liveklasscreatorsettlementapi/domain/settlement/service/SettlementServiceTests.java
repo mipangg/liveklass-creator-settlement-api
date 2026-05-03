@@ -18,8 +18,8 @@ import io.mipangg.liveklasscreatorsettlementapi.domain.creator.entity.Creator;
 import io.mipangg.liveklasscreatorsettlementapi.domain.creator.repository.CreatorRepository;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.entity.SaleRecord;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.repository.SaleRecordRepository;
-import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementReadRequest;
-import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementReadResponse;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementMonthlyReadRequest;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.dto.SettlementMonthlyReadResponse;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.entity.Settlement;
 import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.repository.SettlementRepository;
 import io.mipangg.liveklasscreatorsettlementapi.domain.student.entity.Student;
@@ -69,7 +69,7 @@ class SettlementServiceTests {
         Creator creator = TestUtil.genCreators().getFirst();
         YearMonth yearMonth = YearMonth.of(2025, 3);
 
-        SettlementReadRequest req = new SettlementReadRequest("creator-1", yearMonth);
+        SettlementMonthlyReadRequest req = new SettlementMonthlyReadRequest("creator-1", yearMonth);
 
         OffsetDateTime startDate = OffsetDateTime.parse("2025-03-01T00:00:00+09:00");
         OffsetDateTime endDate = OffsetDateTime.parse("2025-03-31T23:59:59+09:00");
@@ -134,7 +134,7 @@ class SettlementServiceTests {
         when(settlementRepository.saveAndFlush(any()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        SettlementReadResponse result = settlementService.findSettlement(req);
+        SettlementMonthlyReadResponse result = settlementService.findSettlement(req);
 
         assertThat(result.totalSaleAmount()).isEqualByComparingTo(settlement.getTotalSaleAmount());
         assertThat(result.totalCancelAmount()).isEqualByComparingTo(settlement.getTotalCancelAmount());
@@ -154,7 +154,7 @@ class SettlementServiceTests {
         Creator creator = TestUtil.genCreators().getFirst();
         YearMonth yearMonth = YearMonth.of(2026, 5);
 
-        SettlementReadRequest req = new SettlementReadRequest("creator-1", yearMonth);
+        SettlementMonthlyReadRequest req = new SettlementMonthlyReadRequest("creator-1", yearMonth);
 
         OffsetDateTime startDate = OffsetDateTime.parse("2026-05-01T00:00:00+09:00");
 
@@ -224,7 +224,7 @@ class SettlementServiceTests {
         when(cancelRepository.findBySaleRecordInAndCanceledAtBetween(any(), any(), any()))
                 .thenReturn(cancels);
 
-        SettlementReadResponse result = settlementService.findSettlement(req);
+        SettlementMonthlyReadResponse result = settlementService.findSettlement(req);
 
         assertThat(result.totalSaleAmount()).isEqualByComparingTo(settlement.getTotalSaleAmount());
         assertThat(result.totalCancelAmount()).isEqualByComparingTo(settlement.getTotalCancelAmount());
@@ -245,7 +245,7 @@ class SettlementServiceTests {
         Creator creator = TestUtil.genCreators().getFirst();
         YearMonth yearMonth = YearMonth.of(2025, 3);
 
-        SettlementReadRequest req = new SettlementReadRequest("creator-1", yearMonth);
+        SettlementMonthlyReadRequest req = new SettlementMonthlyReadRequest("creator-1", yearMonth);
 
         OffsetDateTime startDate = OffsetDateTime.parse("2025-03-01T00:00:00+09:00");
         OffsetDateTime endDate = OffsetDateTime.parse("2025-03-31T23:59:59+09:00");
@@ -277,7 +277,7 @@ class SettlementServiceTests {
         when(settlementRepository.saveAndFlush(any()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        SettlementReadResponse result = settlementService.findSettlement(req);
+        SettlementMonthlyReadResponse result = settlementService.findSettlement(req);
 
         assertThat(result.totalSaleAmount()).isEqualByComparingTo(settlement.getTotalSaleAmount());
         assertThat(result.totalCancelAmount()).isEqualByComparingTo(settlement.getTotalCancelAmount());
@@ -298,7 +298,7 @@ class SettlementServiceTests {
         Creator creator = TestUtil.genCreators().getFirst();
         YearMonth yearMonth = YearMonth.of(2027, 3);
 
-        SettlementReadRequest req = new SettlementReadRequest("creator-1", yearMonth);
+        SettlementMonthlyReadRequest req = new SettlementMonthlyReadRequest("creator-1", yearMonth);
 
         when(creatorRepository.findById(anyString())).thenReturn(Optional.of(creator));
 
@@ -317,7 +317,7 @@ class SettlementServiceTests {
 
         YearMonth yearMonth = YearMonth.of(2027, 3);
 
-        SettlementReadRequest req = new SettlementReadRequest("creator-1", yearMonth);
+        SettlementMonthlyReadRequest req = new SettlementMonthlyReadRequest("creator-1", yearMonth);
 
         when(creatorRepository.findById(anyString())).thenReturn(Optional.empty());
 
