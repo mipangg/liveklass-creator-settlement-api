@@ -423,7 +423,8 @@ GET /settlements
 
 ## 데이터 모델 설명
 
-<img width="1342" height="750" alt="Image" src="https://github.com/user-attachments/assets/f76920cc-bb91-4324-92bf-70133dd73bec" />
+
+<img width="1306" height="752" alt="Image" src="https://github.com/user-attachments/assets/cbcc500d-21b7-4209-8819-9b9b11934fea" />
 
 ---
 
