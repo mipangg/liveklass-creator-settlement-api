@@ -133,7 +133,7 @@ class SettlementServiceTests {
                 .thenReturn(Optional.of(commissionRate));
         when(saleRecordRepository.findByCreatorAndPaidAtBetween(any(), any(), any()))
                 .thenReturn(saleRecords);
-        when(cancelRepository.findBySaleRecordInAndCanceledAtBetween(any(), any(), any()))
+        when(cancelRepository.findByCreatorAndCanceledAtBetween(any(), any(), any()))
                 .thenReturn(cancels);
         when(settlementRepository.saveAndFlush(any()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
@@ -225,7 +225,7 @@ class SettlementServiceTests {
                 .thenReturn(Optional.of(commissionRate));
         when(saleRecordRepository.findByCreatorAndPaidAtBetween(any(), any(), any()))
                 .thenReturn(saleRecords);
-        when(cancelRepository.findBySaleRecordInAndCanceledAtBetween(any(), any(), any()))
+        when(cancelRepository.findByCreatorAndCanceledAtBetween(any(), any(), any()))
                 .thenReturn(cancels);
 
         SettlementMonthlyReadResponse result = settlementService.findSettlement(req);

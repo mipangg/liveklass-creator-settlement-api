@@ -212,15 +212,6 @@ public class SettlementService {
                         endDate
                 );
 
-        if (saleRecords.isEmpty()) { // 판매/취소 내역 없는 경우
-            return new SalesAndCancelsSummaryDto(
-                    BigDecimal.ZERO,
-                    BigDecimal.ZERO,
-                    0,
-                    0
-            );
-        }
-
         for (SaleRecord saleRecord : saleRecords) {
             totalSaleAmount = totalSaleAmount.add(saleRecord.getAmount());
         }
@@ -229,8 +220,8 @@ public class SettlementService {
         BigDecimal totalCancelAmount = BigDecimal.ZERO;
 
         List<Cancel> cancels =
-                cancelRepository.findBySaleRecordInAndCanceledAtBetween(
-                        saleRecords,
+                cancelRepository.findByCreatorAndCanceledAtBetween(
+                        creator,
                         startDate,
                         endDate
                 );
@@ -256,11 +247,13 @@ public class SettlementService {
         // 순 판매 금액 계산(총 판매 - 환불)
         BigDecimal netSaleAmount = totalSaleAmount.subtract(totalCancelAmount);
 
-        // 수수료(순판매의 현재 수수료율 적용 값(20%))
-        BigDecimal commission =
-                netSaleAmount
-                        .multiply(commissionRate)
-                        .divide(ONE_HUNDRED, 2, RoundingMode.HALF_UP);
+        // 수수료(순판매의 현재 수수료율 적용 값(20%), 순판매가 음수면 수수료 적용 X)
+        BigDecimal commission = BigDecimal.ZERO;
+        if (netSaleAmount.compareTo(commission) > 0) {
+            commission = netSaleAmount
+                    .multiply(commissionRate)
+                    .divide(ONE_HUNDRED, 2, RoundingMode.HALF_UP);
+        }
 
         // 정산 예정 금액 계산(순 판매 - 수수료)
         BigDecimal totalSettlementAmount = netSaleAmount.subtract(commission);
