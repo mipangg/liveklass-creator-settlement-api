@@ -76,6 +76,7 @@ public class Settlement extends BaseEntity {
     public Settlement(
             Creator creator,
             YearMonth settlementMonth,
+            SettlementStatus status,
             BigDecimal totalSaleAmount,
             BigDecimal totalCancelAmount,
             BigDecimal netSaleAmount,
@@ -87,7 +88,7 @@ public class Settlement extends BaseEntity {
     ) {
         this.creator = creator;
         this.settlementMonth = settlementMonth.atDay(1); // YearMonth 입력 시 LocalDate로 저장(월 1일)
-        this.status = SettlementStatus.PENDING;
+        this.status = (status == null) ? SettlementStatus.PENDING : status; // status 기본 값 = PENDING
         this.totalSaleAmount = totalSaleAmount;
         this.totalCancelAmount = totalCancelAmount;
         this.netSaleAmount = netSaleAmount;
@@ -96,6 +97,14 @@ public class Settlement extends BaseEntity {
         this.saleCount = saleCount;
         this.cancelCount = cancelCount;
         this.commissionRate = commissionRate;
+    }
+
+    public void confirm() {
+        this.status = SettlementStatus.CONFIRMED;
+    }
+
+    public void paid() {
+        this.status = SettlementStatus.PAID;
     }
 
 }

@@ -12,10 +12,15 @@ import io.mipangg.liveklasscreatorsettlementapi.domain.creator.entity.Creator;
 import io.mipangg.liveklasscreatorsettlementapi.domain.creator.repository.CreatorRepository;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.entity.SaleRecord;
 import io.mipangg.liveklasscreatorsettlementapi.domain.salerecord.repository.SaleRecordRepository;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.entity.Settlement;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.entity.SettlementStatus;
+import io.mipangg.liveklasscreatorsettlementapi.domain.settlement.repository.SettlementRepository;
 import io.mipangg.liveklasscreatorsettlementapi.domain.student.entity.Student;
 import io.mipangg.liveklasscreatorsettlementapi.domain.student.repository.StudentRepository;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +43,7 @@ public class DataInitializer implements ApplicationRunner {
     private final SaleRecordRepository saleRecordRepository;
     private final CancelRepository cancelRepository;
     private final CommissionRateRepository commissionRateRepository;
+//    private final SettlementRepository settlementRepository;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -99,6 +105,7 @@ public class DataInitializer implements ApplicationRunner {
         }
 
         // 6. CommissionRates - commission 생성 후 expireAt() 호출하여 적용 종료 기간 저장
+        CommissionRate currentCommissionRate = null;
         for (JsonNode node : root.get("commissionRates")) {
             BigDecimal rate = BigDecimal.valueOf(node.get("rate").asInt());
             OffsetDateTime appliedFrom = OffsetDateTime.parse(node.get("appliedFrom").asText());
@@ -107,9 +114,39 @@ public class DataInitializer implements ApplicationRunner {
             if (node.get("appliedTo") != null) {
                 OffsetDateTime appliedTo = OffsetDateTime.parse(node.get("appliedTo").asText());
                 commissionRate.expireAt(appliedTo);
+            } else {
+                currentCommissionRate = commissionRate;
             }
             commissionRateRepository.save(commissionRate);
 
         }
+
+        // 7. Settlements — creatorId로 위에서 저장한 Creator, 수수료율은 위에서 저장한 currentCommissionRate 참조
+//        for (JsonNode node : root.get("settlements")) {
+//            Creator creator = creatorMap.get(node.get("creatorId").asText());
+//            YearMonth settlementMonth = YearMonth.parse(node.get("settlementMonth").asText());
+//            SettlementStatus status = SettlementStatus.valueOf(node.get("status").asText());
+//            BigDecimal totalSaleAmount = BigDecimal.valueOf(node.get("totalSaleAmount").asInt());
+//            BigDecimal totalCancelAmount = BigDecimal.valueOf(node.get("totalCancelAmount").asInt());
+//            BigDecimal netSaleAmount = BigDecimal.valueOf(node.get("netSaleAmount").asInt());
+//            BigDecimal commission = BigDecimal.valueOf(node.get("commission").asInt());
+//            BigDecimal totalSettlementAmount = BigDecimal.valueOf(node.get("totalSettlementAmount").asInt());
+//            int saleCount = node.get("saleCount").asInt();
+//            int cancelCount = node.get("cancelCount").asInt();
+//            settlementRepository.save(new Settlement(
+//                    creator,
+//                    settlementMonth,
+//                    status,
+//                    totalSaleAmount,
+//                    totalCancelAmount,
+//                    netSaleAmount,
+//                    commission,
+//                    totalSettlementAmount,
+//                    saleCount,
+//                    cancelCount,
+//                    currentCommissionRate
+//            ));
+//        }
+
     }
 }
