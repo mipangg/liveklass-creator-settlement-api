@@ -43,7 +43,7 @@ public class DataInitializer implements ApplicationRunner {
     private final SaleRecordRepository saleRecordRepository;
     private final CancelRepository cancelRepository;
     private final CommissionRateRepository commissionRateRepository;
-    private final SettlementRepository settlementRepository;
+//    private final SettlementRepository settlementRepository;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -122,31 +122,31 @@ public class DataInitializer implements ApplicationRunner {
         }
 
         // 7. Settlements — creatorId로 위에서 저장한 Creator, 수수료율은 위에서 저장한 currentCommissionRate 참조
-        for (JsonNode node : root.get("settlements")) {
-            Creator creator = creatorMap.get(node.get("creatorId").asText());
-            YearMonth settlementMonth = YearMonth.parse(node.get("settlementMonth").asText());
-            SettlementStatus status = SettlementStatus.valueOf(node.get("status").asText());
-            BigDecimal totalSaleAmount = BigDecimal.valueOf(node.get("totalSaleAmount").asInt());
-            BigDecimal totalCancelAmount = BigDecimal.valueOf(node.get("totalCancelAmount").asInt());
-            BigDecimal netSaleAmount = BigDecimal.valueOf(node.get("netSaleAmount").asInt());
-            BigDecimal commission = BigDecimal.valueOf(node.get("commission").asInt());
-            BigDecimal totalSettlementAmount = BigDecimal.valueOf(node.get("totalSettlementAmount").asInt());
-            int saleCount = node.get("saleCount").asInt();
-            int cancelCount = node.get("cancelCount").asInt();
-            settlementRepository.save(new Settlement(
-                    creator,
-                    settlementMonth,
-                    status,
-                    totalSaleAmount,
-                    totalCancelAmount,
-                    netSaleAmount,
-                    commission,
-                    totalSettlementAmount,
-                    saleCount,
-                    cancelCount,
-                    currentCommissionRate
-            ));
-        }
+//        for (JsonNode node : root.get("settlements")) {
+//            Creator creator = creatorMap.get(node.get("creatorId").asText());
+//            YearMonth settlementMonth = YearMonth.parse(node.get("settlementMonth").asText());
+//            SettlementStatus status = SettlementStatus.valueOf(node.get("status").asText());
+//            BigDecimal totalSaleAmount = BigDecimal.valueOf(node.get("totalSaleAmount").asInt());
+//            BigDecimal totalCancelAmount = BigDecimal.valueOf(node.get("totalCancelAmount").asInt());
+//            BigDecimal netSaleAmount = BigDecimal.valueOf(node.get("netSaleAmount").asInt());
+//            BigDecimal commission = BigDecimal.valueOf(node.get("commission").asInt());
+//            BigDecimal totalSettlementAmount = BigDecimal.valueOf(node.get("totalSettlementAmount").asInt());
+//            int saleCount = node.get("saleCount").asInt();
+//            int cancelCount = node.get("cancelCount").asInt();
+//            settlementRepository.save(new Settlement(
+//                    creator,
+//                    settlementMonth,
+//                    status,
+//                    totalSaleAmount,
+//                    totalCancelAmount,
+//                    netSaleAmount,
+//                    commission,
+//                    totalSettlementAmount,
+//                    saleCount,
+//                    cancelCount,
+//                    currentCommissionRate
+//            ));
+//        }
 
     }
 }
