@@ -127,5 +127,63 @@
       "rate": "20",
       "appliedFrom": "2025-01-01T00:00:00+09:00"
     }
+  ],
+  "settlements": [
+    {
+      "id": "settlement-1",
+      "creatorId": "creator-1",
+      "settlementMonth": "2025-03",
+      "status": "CONFIRMED",
+      "totalSaleAmount": 260000,
+      "totalCancelAmount": 110000,
+      "netSaleAmount": 150000,
+      "commission": 30000,
+      "totalSettlementAmount": 120000,
+      "saleCount": 4,
+      "cancelCount": 2,
+      "commissionRateId": "commission-2"
+    },
+    {
+      "id": "settlement-2",
+      "creatorId": "creator-2",
+      "settlementMonth": "2025-03",
+      "status": "PENDING",
+      "totalSaleAmount": 60000,
+      "totalCancelAmount": 0,
+      "netSaleAmount": 60000,
+      "commission": 12000,
+      "totalSettlementAmount": 48000,
+      "saleCount": 1,
+      "cancelCount": 0,
+      "commissionRateId": "commission-2"
+    },
+    {
+      "id": "settlement-3",
+      "creatorId": "creator-2",
+      "settlementMonth": "2025-02",
+      "status": "PAID",
+      "totalSaleAmount": 0,
+      "totalCancelAmount": 60000,
+      "netSaleAmount": -60000,
+      "commission": 0,
+      "totalSettlementAmount": -60000,
+      "saleCount": 0,
+      "cancelCount": 1,
+      "commissionRateId": "commission-2"
+    },
+    {
+      "id": "settlement-4",
+      "creatorId": "creator-3",
+      "settlementMonth": "2025-02",
+      "status": "PAID",
+      "totalSaleAmount": 120000,
+      "totalCancelAmount": 0,
+      "netSaleAmount": 120000,
+      "commission": 24000,
+      "totalSettlementAmount": 96000,
+      "saleCount": 1,
+      "cancelCount": 0,
+      "commissionRateId": "commission-2"
+    }
   ]
 }
