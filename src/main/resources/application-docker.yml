@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:mysql://mysql:3306/creator_settlement
+    username: root
+    password: 1234
+
+  jpa:
+    hibernate:
+      ddl-auto: update
