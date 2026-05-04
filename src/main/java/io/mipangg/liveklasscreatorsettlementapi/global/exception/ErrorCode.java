@@ -12,6 +12,7 @@ public enum ErrorCode {
     DATE_RANGE_REQUIRED(HttpStatus.BAD_REQUEST, "시작 날짜와 종료 날짜는 함께 입력되어야 합니다."),
     INVALID_DATE_RANGE(HttpStatus.BAD_REQUEST, "시작 날짜는 종료 날짜보다 이전이어야 합니다."),
     INVALID_DATE(HttpStatus.BAD_REQUEST, "입력된 날짜는 과거 혹은 현재여야 합니다."),
+    CANCEL_AMOUNT_EXCEEDED(HttpStatus.BAD_REQUEST, "환불 요청 금액이 남은 원결제 금액을 초과할 수 없습니다."),
     /*
      * 404 NOT_FOUND: 리소스를 찾을 수 없음
      */
